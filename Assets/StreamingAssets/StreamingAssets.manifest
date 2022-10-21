@@ -1,0 +1,59 @@
+ManifestFileVersion: 0
+CRC: 901105523
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: sprites/e_metal05
+      Dependencies: {}
+    Info_1:
+      Name: shaders/s
+      Dependencies: {}
+    Info_2:
+      Name: prefabs/shape/cube
+      Dependencies:
+        Dependency_0: materials/m1
+    Info_3:
+      Name: sprites/atlas@1
+      Dependencies: {}
+    Info_4:
+      Name: scenes/samplescene
+      Dependencies: {}
+    Info_5:
+      Name: sprites/atlas@4
+      Dependencies: {}
+    Info_6:
+      Name: prefabs/role/role
+      Dependencies: {}
+    Info_7:
+      Name: sprites/atlas@0
+      Dependencies: {}
+    Info_8:
+      Name: sprites/atlas@3
+      Dependencies: {}
+    Info_9:
+      Name: sprites/e_wood01
+      Dependencies: {}
+    Info_10:
+      Name: sprites/atlas@2
+      Dependencies: {}
+    Info_11:
+      Name: sprites/e_metal04
+      Dependencies: {}
+    Info_12:
+      Name: sprites/e_wood02
+      Dependencies: {}
+    Info_13:
+      Name: materials/m1
+      Dependencies:
+        Dependency_0: sprites/e_metal05
+        Dependency_1: shaders/s
+    Info_14:
+      Name: materials/m2
+      Dependencies:
+        Dependency_0: shaders/s
+        Dependency_1: sprites/atlas@3
+    Info_15:
+      Name: materials/m3
+      Dependencies:
+        Dependency_0: shaders/s
+        Dependency_1: sprites/atlas@4

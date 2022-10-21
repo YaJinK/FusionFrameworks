@@ -1,0 +1,23 @@
+ManifestFileVersion: 0
+CRC: 4242230472
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: e3d47b3445cdef78bb3d8d2644043280
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: d5656af68283edd8be48ea29d7c443ed
+HashAppended: 0
+ClassTypes:
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/GameAssets/Materials/M3.mat
+Dependencies:
+- E:/Work/Project/Frameworks/Assets/StreamingAssets/shaders/s
+- E:/Work/Project/Frameworks/Assets/StreamingAssets/sprites/atlas@4

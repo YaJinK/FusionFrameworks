@@ -1,0 +1,15 @@
+{
+  "name": "com.fusion.frameworks",
+  "version": "0.0.1",
+  "displayName": "Frameworks",
+  "description": "Frameworks",
+  "unity": "2021.3.8f1c1",
+  "keywords": [
+    "Frameworks",
+    "UI",
+    "AssetsManager"
+  ],
+  "author": {
+    "name": "kagawa"
+  }
+}

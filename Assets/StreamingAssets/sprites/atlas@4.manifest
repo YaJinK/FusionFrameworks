@@ -1,0 +1,21 @@
+ManifestFileVersion: 0
+CRC: 1420786361
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: e8788cecb07b47d97433cdbd63a88893
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 0d677c6dec2405a43fe6dd294cca7c3e
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+- Class: 687078895
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/GameAssets/Sprites/9.png
+Dependencies: []

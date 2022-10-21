@@ -1,0 +1,17 @@
+ManifestFileVersion: 0
+CRC: 3527180691
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 59c13489ecf8df46c22adbbae1fa9851
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: ff414f606ea1972259b080d7bcf51689
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/GameAssets/Sprites/E_Wood02.png
+Dependencies: []

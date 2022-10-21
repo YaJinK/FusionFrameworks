@@ -1,0 +1,17 @@
+ManifestFileVersion: 0
+CRC: 4218999931
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: afebf072ad3a3430c95cd89dd2b71c59
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 070e64028d0fb02d3485eb0d43485f8b
+HashAppended: 0
+ClassTypes:
+- Class: 48
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/GameAssets/Shaders/S.shader
+Dependencies: []

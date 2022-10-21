@@ -1,0 +1,17 @@
+ManifestFileVersion: 0
+CRC: 5085318
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 204cb2f8207b01b1ff1f43ecc3e7bd4b
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: ff414f606ea1972259b080d7bcf51689
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/GameAssets/Sprites/E_Metal04.png
+Dependencies: []

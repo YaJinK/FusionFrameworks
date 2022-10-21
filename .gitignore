@@ -1,0 +1,9 @@
+/Library
+/Logs
+/obj
+/Output
+/Output
+/*.csproj
+/*.sln
+/.vsconfig
+/.vs
