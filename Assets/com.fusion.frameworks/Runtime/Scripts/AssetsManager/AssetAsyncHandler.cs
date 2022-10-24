@@ -1,12 +1,12 @@
-using System;
+锘縰sing System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Fusion.Frameworks.Assets
 {
     /// <summary>
-    /// 异步设置资源时，记录资源加载完成后的回调
-    /// 当回调执行之后，会把回调函数删除
+    /// 寮傛璁剧疆璧勬簮鏃讹紝璁板綍璧勬簮鍔犺浇瀹屾垚鍚庣殑鍥炶皟
+    /// 褰撳洖璋冩墽琛屼箣鍚庯紝浼氭妸鍥炶皟鍑芥暟鍒犻櫎
     /// </summary>
     [DisallowMultipleComponent]
     public class AssetAsyncHandler : MonoBehaviour

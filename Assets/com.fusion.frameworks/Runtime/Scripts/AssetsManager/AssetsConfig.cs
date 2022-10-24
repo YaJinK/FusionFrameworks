@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 namespace Fusion.Frameworks.Assets
 {
     /// <summary>
-    /// ¼ÇÂ¼ÁË×ÊÔ´ÓëAssetBundleµÄÃû³ÆMapÒÔ¼°Ïà¹Ø×ÊÔ´µÄÅäÖÃ
+    /// è®°å½•äº†èµ„æºä¸AssetBundleçš„åç§°Mapä»¥åŠç›¸å…³èµ„æºçš„é…ç½®
     /// </summary>
     public static class AssetsConfig
     {

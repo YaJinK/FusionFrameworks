@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Fusion.Frameworks.Assets
@@ -23,7 +23,7 @@ namespace Fusion.Frameworks.Assets
     }
 
     /// <summary>
-    /// ¼ÇÂ¼ÁËGameObjectÒıÓÃÁËÄÄĞ©AssetBundle£¬Ïú»ÙGameObjectÊ±£¬»á¼õÈ¥¶ÔÓ¦µÄÒıÓÃÊı
+    /// è®°å½•äº†GameObjectå¼•ç”¨äº†å“ªäº›AssetBundleï¼Œé”€æ¯GameObjectæ—¶ï¼Œä¼šå‡å»å¯¹åº”çš„å¼•ç”¨æ•°
     /// </summary>
     [DisallowMultipleComponent]
     public class GameObjectAssetRecorder : MonoBehaviour

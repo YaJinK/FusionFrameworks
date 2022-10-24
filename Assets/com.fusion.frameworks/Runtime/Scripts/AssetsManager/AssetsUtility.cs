@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,7 +9,7 @@ namespace Fusion.Frameworks.Assets
     {
 
         /// <summary>
-        /// ÉèÖÃ¾«ÁéÍ¼Æ¬
+        /// è®¾ç½®ç²¾çµå›¾ç‰‡
         /// </summary>
         /// <param name="gameObject"></param>
         /// <param name="path"></param>
@@ -24,7 +24,7 @@ namespace Fusion.Frameworks.Assets
         }
 
         /// <summary>
-        /// Òì²½ÉèÖÃ¾«ÁéÍ¼Æ¬
+        /// å¼‚æ­¥è®¾ç½®ç²¾çµå›¾ç‰‡
         /// </summary>
         /// <param name="gameObject"></param>
         /// <param name="path"></param>
@@ -43,7 +43,7 @@ namespace Fusion.Frameworks.Assets
         }
 
         /// <summary>
-        /// ÉèÖÃMeshRendererµÄ²ÄÖÊ
+        /// è®¾ç½®MeshRendererçš„æè´¨
         /// </summary>
         /// <param name="gameObject"></param>
         /// <param name="path"></param>
@@ -57,7 +57,7 @@ namespace Fusion.Frameworks.Assets
         }
 
         /// <summary>
-        /// Òì²½ÉèÖÃMeshRendererµÄ²ÄÖÊ
+        /// å¼‚æ­¥è®¾ç½®MeshRendererçš„æè´¨
         /// </summary>
         /// <param name="gameObject"></param>
         /// <param name="path"></param>
@@ -94,7 +94,7 @@ namespace Fusion.Frameworks.Assets
         }
 
         /// <summary>
-        /// Í¨¹ıÔ¤Éè´´½¨ĞÂµÄGameObject
+        /// é€šè¿‡é¢„è®¾åˆ›å»ºæ–°çš„GameObject
         /// </summary>
         /// <param name="path"></param>
         /// <param name="parent"></param>
@@ -115,7 +115,7 @@ namespace Fusion.Frameworks.Assets
         }
 
         /// <summary>
-        /// Òì²½Í¨¹ıÔ¤Éè´´½¨ĞÂµÄGameObject
+        /// å¼‚æ­¥é€šè¿‡é¢„è®¾åˆ›å»ºæ–°çš„GameObject
         /// </summary>
         /// <param name="path"></param>
         /// <param name="parent"></param>
@@ -141,7 +141,7 @@ namespace Fusion.Frameworks.Assets
         }
 
         /// <summary>
-        /// Ïú»ÙGameObject
+        /// é”€æ¯GameObject
         /// </summary>
         /// <param name="gameObject"></param>
         public static void Release(GameObject gameObject)

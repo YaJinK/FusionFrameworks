@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -41,7 +41,7 @@ namespace Fusion.Frameworks.Assets
     }
 
     /// <summary>
-    /// ¼ÇÂ¼AssetBundleµÄÒıÓÃÊıÁ¿£¬µ±ÒıÓÃÊıÁ¿Îª0Ê±»áÏú»ÙAssetBundleÒÔ¼°¼ÓÔØ³öÀ´µÄ×ÊÔ´
+    /// è®°å½•AssetBundleçš„å¼•ç”¨æ•°é‡ï¼Œå½“å¼•ç”¨æ•°é‡ä¸º0æ—¶ä¼šé”€æ¯AssetBundleä»¥åŠåŠ è½½å‡ºæ¥çš„èµ„æº
     /// </summary>
     [DisallowMultipleComponent]
     public class AssetReferences : MonoBehaviour

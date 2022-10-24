@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Fusion.Frameworks.Assets
 {
     /// <summary>
-    /// Ìá¹©AssetBundle¼°AssetµÄ¼ÓÔØ
+    /// æä¾›AssetBundleåŠAssetçš„åŠ è½½
     /// </summary>
     [DisallowMultipleComponent]
     public class AssetsManager : MonoBehaviour
