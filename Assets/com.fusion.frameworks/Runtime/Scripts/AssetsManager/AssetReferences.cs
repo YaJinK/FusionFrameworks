@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +8,7 @@ namespace Fusion.Frameworks.Assets
     {
         private AssetBundle assetBundle = null;
         private int referenceCount = 0;
+        private Coroutine releaseCoroutine = null;
 
         public int ReferenceCount
         {
@@ -15,6 +16,7 @@ namespace Fusion.Frameworks.Assets
         }
 
         public AssetBundle AssetBundle { get => assetBundle; }
+        public Coroutine ReleaseCoroutine { get => releaseCoroutine; set => releaseCoroutine = value; }
 
         public AssetData(AssetBundle assetBundle)
         {
@@ -35,9 +37,14 @@ namespace Fusion.Frameworks.Assets
             if (referenceCount <= 0)
             {
                 referenceCount = 0;
-                assetBundle.Unload(true);
             }
         }
+
+        public void ReleaseAssetBundle()
+        {
+            assetBundle.Unload(true);
+        }
+
     }
 
     /// <summary>
@@ -48,6 +55,7 @@ namespace Fusion.Frameworks.Assets
     {
         private static AssetReferences instance;
         private Dictionary<string, AssetData> assetReferences = new Dictionary<string, AssetData>();
+        private WaitForSecondsRealtime releaseCountdown = new WaitForSecondsRealtime(4);
 
         public static AssetReferences Instance
         {
@@ -70,6 +78,10 @@ namespace Fusion.Frameworks.Assets
             bool result = assetReferences.TryGetValue(name, out assetData);
             if (result)
             {
+                if (assetData.ReleaseCoroutine != null) {
+                    StopCoroutine(assetData.ReleaseCoroutine);
+                    assetData.ReleaseCoroutine = null;
+                }
                 assetData.Reference();
             } else
             {
@@ -83,6 +95,18 @@ namespace Fusion.Frameworks.Assets
             Release(name, count);
         }
 
+        private void ReleaseAssetData(string name)
+        {
+            AssetData assetData = assetReferences[name];
+            assetData.ReleaseAssetBundle();
+            assetReferences.Remove(name);
+        }
+        private IEnumerator ReleaseAssetDataCountdown(string name)
+        {
+            yield return releaseCountdown;
+            ReleaseAssetData(name);
+        }
+
         public void Release(string name, int count = 1)
         {
             name = name.ToLower();
@@ -92,7 +116,7 @@ namespace Fusion.Frameworks.Assets
                 assetData.Release(count);
                 if (assetReferences[name].ReferenceCount == 0)
                 {
-                    assetReferences.Remove(name);
+                    assetData.ReleaseCoroutine = StartCoroutine(ReleaseAssetDataCountdown(name));
                 }
             }
         }
