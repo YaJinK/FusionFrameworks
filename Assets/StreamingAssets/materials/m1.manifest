@@ -19,5 +19,5 @@ SerializeReferenceClassIdentifiers: []
 Assets:
 - Assets/GameAssets/Materials/M1.mat
 Dependencies:
-- E:/Work/Project/Frameworks/Assets/StreamingAssets/shaders/s
-- E:/Work/Project/Frameworks/Assets/StreamingAssets/sprites/e_metal05
+- E:/Work/Project/FusionFrameworks/Assets/StreamingAssets/shaders/s
+- E:/Work/Project/FusionFrameworks/Assets/StreamingAssets/sprites/e_metal05

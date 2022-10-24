@@ -25,16 +25,16 @@ public class ButtonEvent : MonoBehaviour
 
     public void Create()
     {
-        AssetsUtility.CreateGameObjectAsync("Prefabs/Shape/Cube");
+        AssetsUtility.CreateGameObjectAsync("Prefabs/Shape/Page", GameObject.Find("Canvas"));
     }
 
     public void M1()
     {
-        AssetsUtility.SetMaterialOfMeshRendererAsync(obj, "Materials/M2");
+        AssetsUtility.SetSprite(obj.transform.Find("RawImage").gameObject, "Sprites/5");
     }
 
     public void M2()
     {
-        AssetsUtility.SetMaterialOfMeshRendererAsync(obj, "Materials/M3");
+        AssetsUtility.SetSprite(obj.transform.Find("RawImage").gameObject, "Sprites/4");
     }
 }

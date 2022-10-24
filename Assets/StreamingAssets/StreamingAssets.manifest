@@ -1,5 +1,5 @@
 ManifestFileVersion: 0
-CRC: 901105523
+CRC: 1850513054
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
@@ -57,3 +57,6 @@ AssetBundleManifest:
       Dependencies:
         Dependency_0: shaders/s
         Dependency_1: sprites/atlas@4
+    Info_16:
+      Name: prefabs/shape/page
+      Dependencies: {}

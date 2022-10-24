@@ -19,5 +19,5 @@ SerializeReferenceClassIdentifiers: []
 Assets:
 - Assets/GameAssets/Materials/M3.mat
 Dependencies:
-- E:/Work/Project/Frameworks/Assets/StreamingAssets/shaders/s
-- E:/Work/Project/Frameworks/Assets/StreamingAssets/sprites/atlas@4
+- E:/Work/Project/FusionFrameworks/Assets/StreamingAssets/shaders/s
+- E:/Work/Project/FusionFrameworks/Assets/StreamingAssets/sprites/atlas@4
