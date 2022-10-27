@@ -1,46 +1,32 @@
 ManifestFileVersion: 0
-CRC: 2735949066
+CRC: 2613690158
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 35e4f85ad4e407a2c65ad93b9635e016
+    Hash: 21d534ad37da07b010a9d8643073252a
   TypeTreeHash:
     serializedVersion: 2
-    Hash: c250d960d6765a92957cb4412333b809
+    Hash: fe8370c7b99047d27dd063a8f78fb138
 HashAppended: 0
 ClassTypes:
 - Class: 1
   Script: {instanceID: 0}
-- Class: 4
-  Script: {instanceID: 0}
 - Class: 21
-  Script: {instanceID: 0}
-- Class: 23
   Script: {instanceID: 0}
 - Class: 28
   Script: {instanceID: 0}
-- Class: 33
-  Script: {instanceID: 0}
-- Class: 43
-  Script: {instanceID: 0}
 - Class: 48
-  Script: {instanceID: 0}
-- Class: 65
   Script: {instanceID: 0}
 - Class: 114
   Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-- Class: 114
-  Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
 - Class: 114
-  Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
-- Class: 114
   Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
 - Class: 114
-  Script: {fileID: 11500000, guid: 33567d9b75039914b919dee7d7158a13, type: 3}
+  Script: {fileID: 11500000, guid: 23839177a9677e24bb4c1c2b81d7ea5c, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 128
@@ -48,8 +34,6 @@ ClassTypes:
 - Class: 213
   Script: {instanceID: 0}
 - Class: 222
-  Script: {instanceID: 0}
-- Class: 223
   Script: {instanceID: 0}
 - Class: 224
   Script: {instanceID: 0}
@@ -75,11 +59,7 @@ SerializeReferenceClassIdentifiers:
 - AssemblyName: Unity.TextMeshPro
   ClassName: TMPro.VertexGradient
 - AssemblyName: UnityEngine.CoreModule
-  ClassName: UnityEngine.Events.ArgumentCache
-- AssemblyName: UnityEngine.CoreModule
   ClassName: UnityEngine.Events.PersistentCallGroup
-- AssemblyName: UnityEngine.CoreModule
-  ClassName: UnityEngine.Events.PersistentListenerMode
 - AssemblyName: UnityEngine.TextCoreFontEngineModule
   ClassName: UnityEngine.TextCore.FaceInfo
 - AssemblyName: UnityEngine.TextCoreFontEngineModule
@@ -101,6 +81,6 @@ SerializeReferenceClassIdentifiers:
 - AssemblyName: UnityEngine.UI
   ClassName: UnityEngine.UI.SpriteState
 Assets:
-- Assets/GameAssets/Prefabs/Shape/Cube.prefab
-Dependencies:
-- E:/Work/Project/FusionFrameworks/Assets/StreamingAssets/materials/m1
+- Assets/GameAssets/Prefabs/UI/Page1.prefab
+- Assets/GameAssets/Prefabs/UI/Page2.prefab
+Dependencies: []

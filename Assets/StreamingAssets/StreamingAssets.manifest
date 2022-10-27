@@ -1,5 +1,5 @@
 ManifestFileVersion: 0
-CRC: 1850513054
+CRC: 853816876
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
@@ -9,54 +9,54 @@ AssetBundleManifest:
       Name: shaders/s
       Dependencies: {}
     Info_2:
-      Name: prefabs/shape/cube
-      Dependencies:
-        Dependency_0: materials/m1
-    Info_3:
       Name: sprites/atlas@1
       Dependencies: {}
-    Info_4:
+    Info_3:
       Name: scenes/samplescene
       Dependencies: {}
-    Info_5:
+    Info_4:
       Name: sprites/atlas@4
       Dependencies: {}
-    Info_6:
-      Name: prefabs/role/role
-      Dependencies: {}
-    Info_7:
+    Info_5:
       Name: sprites/atlas@0
       Dependencies: {}
-    Info_8:
+    Info_6:
       Name: sprites/atlas@3
       Dependencies: {}
-    Info_9:
+    Info_7:
       Name: sprites/e_wood01
       Dependencies: {}
-    Info_10:
+    Info_8:
       Name: sprites/atlas@2
       Dependencies: {}
-    Info_11:
+    Info_9:
       Name: sprites/e_metal04
       Dependencies: {}
-    Info_12:
+    Info_10:
       Name: sprites/e_wood02
       Dependencies: {}
-    Info_13:
+    Info_11:
       Name: materials/m1
       Dependencies:
         Dependency_0: sprites/e_metal05
         Dependency_1: shaders/s
-    Info_14:
+    Info_12:
       Name: materials/m2
       Dependencies:
         Dependency_0: shaders/s
         Dependency_1: sprites/atlas@3
-    Info_15:
+    Info_13:
       Name: materials/m3
       Dependencies:
         Dependency_0: shaders/s
         Dependency_1: sprites/atlas@4
+    Info_14:
+      Name: prefabs/role
+      Dependencies: {}
+    Info_15:
+      Name: prefabs/shape
+      Dependencies:
+        Dependency_0: materials/m1
     Info_16:
-      Name: prefabs/shape/page
+      Name: prefabs/ui
       Dependencies: {}
