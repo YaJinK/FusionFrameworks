@@ -1,7 +1,9 @@
 using Fusion.Frameworks.Assets;
+using Fusion.Frameworks.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +12,7 @@ public class Test : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Image image = GetComponent<Image>();
+        //Image image = GetComponent<Image>();
         //image.gameObject.SetActive(false);
 
         //AssetsUtility.SetSprite(gameObject, "Sprites/1");
@@ -33,6 +35,7 @@ public class Test : MonoBehaviour
         //    GameObject cubeInstance = Instantiate(gameObject);
         //    cubeInstance.transform.position = Vector3.zero;
         //});
+        UIManager.Instance.LaunchAsync("Prefabs/UI/Page1", new UIData { LaunchMode = UILaunchMode.SingleTop});
     }
 
     // Update is called once per frame

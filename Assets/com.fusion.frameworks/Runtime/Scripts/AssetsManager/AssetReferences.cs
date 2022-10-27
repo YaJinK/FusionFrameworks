@@ -55,8 +55,7 @@ namespace Fusion.Frameworks.Assets
     {
         private static AssetReferences instance;
         private Dictionary<string, AssetData> assetReferences = new Dictionary<string, AssetData>();
-        private WaitForSecondsRealtime releaseCountdown = new WaitForSecondsRealtime(4);
-
+        private float releaseDelay = 4.0f;
         public static AssetReferences Instance
         {
             get
@@ -103,7 +102,7 @@ namespace Fusion.Frameworks.Assets
         }
         private IEnumerator ReleaseAssetDataCountdown(string name)
         {
-            yield return releaseCountdown;
+            yield return new WaitForSecondsRealtime(releaseDelay);
             ReleaseAssetData(name);
         }
 
