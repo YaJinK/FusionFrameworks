@@ -1,11 +1,8 @@
 using Fusion.Frameworks.Assets;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using UnityEngine;
-using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace Fusion.Frameworks.UI
 {
@@ -62,7 +59,15 @@ namespace Fusion.Frameworks.UI
 
         private List<UIObject> objectList = new List<UIObject>(4);
         private Dictionary<string, List<int>> indexListMap = new Dictionary<string, List<int>>();
-        private Dictionary<string, UIObject> asyncHandling = new Dictionary<string, UIObject>();
+        private Dictionary<string, AsyncHandlingData> asyncHandling = new Dictionary<string, AsyncHandlingData>();
+
+        private class AsyncHandlingData {
+            public UIObject uiObject = null;
+            public int objectIndex = 0;
+        }
+
+
+        private float zDistance = -5.0f;
 
         public UIObject Launch(string path, UIData data = null)
         {
@@ -74,18 +79,20 @@ namespace Fusion.Frameworks.UI
             if (data.LaunchMode == UILaunchMode.Standard)
             {
                 UIObject uiObject = CreateUIObject(path, data);
-                HandleUILaunchData(uiObject);
+                int objectIndex = HandleUILaunchData(uiObject);
+                uiObject.GameObject.transform.localPosition = new Vector3(0, 0, zDistance * objectIndex);
                 return uiObject;
             } else
             {
-                int index = GetUIIndex(path);
+                int index = GetTopUIIndex(path);
                 if (index >= 0)
                 {
                     return LaunchSingleTop(index, data);
                 } else
                 {
                     UIObject uiObject = CreateUIObject(path, data);
-                    HandleUILaunchData(uiObject);
+                    int objectIndex = HandleUILaunchData(uiObject);
+                    uiObject.GameObject.transform.localPosition = new Vector3(0, 0, zDistance * objectIndex);
                     return uiObject;
                 }
             }
@@ -107,6 +114,10 @@ namespace Fusion.Frameworks.UI
             Type classType = Type.GetType($"{className}, Assembly-CSharp");
             UIObject uiObject = classType != null ? (UIObject)Activator.CreateInstance(classType, data) : new UIObject(data);
             uiObject.GameObject = gameObject;
+            Canvas canvas = uiObject.GameObject.GetOrAddComponent<Canvas>();
+            uiObject.GameObject.GetOrAddComponent<GraphicRaycaster>();
+            canvas.SetOverrideSorting(true);
+            canvas.sortingOrder = uiObject.SortingOrder;
             uiObject.Init();
             uiObject.Update();
 
@@ -126,7 +137,7 @@ namespace Fusion.Frameworks.UI
             }
             else
             {
-                int index = GetUIIndex(path);
+                int index = GetTopUIIndex(path);
                 if (index >= 0)
                 {
                     return LaunchSingleTop(index, data);
@@ -140,25 +151,26 @@ namespace Fusion.Frameworks.UI
 
         public UIObject CreateUIObjectAsyncHandling(string path, UIData data)
         {
-            Dictionary<string, UIObject> asyncHandling = GetCurrentAsyncHandling();
+            Dictionary<string, AsyncHandlingData> asyncHandling = GetCurrentAsyncHandling();
             if (asyncHandling.ContainsKey(path))
             {
-            Debug.LogError(asyncHandling[path]);
-                return asyncHandling[path];
+                return asyncHandling[path].uiObject;
             }
             else
             {
-                UIObject uiObject = CreateUIObjectAsync(path, data, null, delegate ()
+                UIObject uiObject = CreateUIObjectAsync(path, data, null, delegate (UIObject uiObject)
                 {
+                    uiObject.GameObject.transform.localPosition = new Vector3(0, 0, zDistance * asyncHandling[path].objectIndex);
                     asyncHandling.Remove(path);
                 });
-                asyncHandling[path] = uiObject;
-                HandleUILaunchData(uiObject);
+                asyncHandling[path] = new AsyncHandlingData();
+                asyncHandling[path].uiObject = uiObject;
+                asyncHandling[path].objectIndex = HandleUILaunchData(uiObject);
                 return uiObject;
             }
         }
 
-        public UIObject CreateUIObjectAsync(string path, UIData data = null, GameObject rootObject = null, Action finishCallback = null)
+        public UIObject CreateUIObjectAsync(string path, UIData data = null, GameObject rootObject = null, Action<UIObject> finishCallback = null)
         {
             if (rootObject == null)
             {
@@ -175,11 +187,15 @@ namespace Fusion.Frameworks.UI
             AssetsUtility.CreateGameObjectAsync(path, rootObject, false, delegate(GameObject gameObject)
             {
                 uiObject.GameObject = gameObject;
+                Canvas canvas = uiObject.GameObject.GetOrAddComponent<Canvas>();
+                uiObject.GameObject.GetOrAddComponent<GraphicRaycaster>();
+                canvas.SetOverrideSorting(true);
+                canvas.sortingOrder = uiObject.SortingOrder;
                 uiObject.Init();
                 uiObject.Update();
                 if (finishCallback != null)
                 {
-                    finishCallback();
+                    finishCallback(uiObject);
                 }
             });
 
@@ -188,24 +204,24 @@ namespace Fusion.Frameworks.UI
 
         public void Finish(UIObject uiObject, bool updateLast = false)
         {
-            int index = GetUIIndex(uiObject);
+            int index = GetTopUIIndex(uiObject);
             List<UIObject> objectList = GetCurrentUIObjectList();
+            objectList.RemoveAt(index);
 
-            if (index == objectList.Count - 1 && index > 0)
+            if (index == objectList.Count && index > 0)
             {
+                int lastWindowIndex = GetLastWindowIndex();
+                for (int i = lastWindowIndex; i < objectList.Count; i++)
+                {
+                    UIObject windowUIObject = objectList[i];
+                    windowUIObject.SetActive(true);
+                }
                 UIObject lastUIObject = objectList[index - 1];
+
                 if (updateLast)
                 {
                     lastUIObject.Update();
                 }
-                lastUIObject.SetActive(true);
-            }
-            objectList.RemoveAt(index);
-            Dictionary<string, List<int>> indexListMap = GetCurrentUIIndexListMap();
-            List<int> uiIndexList = indexListMap[uiObject.Data.Name];
-            if (uiIndexList.Count > 0)
-            {
-                uiIndexList.RemoveAt(uiIndexList.Count - 1);
             }
             AssetsUtility.Release(uiObject.GameObject);
         }
@@ -214,11 +230,8 @@ namespace Fusion.Frameworks.UI
         {
             return objectList;
         }
-        private Dictionary<string, List<int>> GetCurrentUIIndexListMap()
-        {
-            return indexListMap;
-        }
-        private Dictionary<string, UIObject> GetCurrentAsyncHandling()
+     
+        private Dictionary<string, AsyncHandlingData> GetCurrentAsyncHandling()
         {
             return asyncHandling;
         }
@@ -229,8 +242,7 @@ namespace Fusion.Frameworks.UI
             int index = -1;
             for (int i=objectList.Count - 1; i >= 0; i--)
             {
-                UITempleteData templeteData = objectList[i].GameObject.GetComponent<UITempleteData>();
-                if (templeteData.Type == UIType.Window)
+                if (objectList[i].Type == UIType.Window)
                 {
                     index = i;
                     break;
@@ -240,55 +252,55 @@ namespace Fusion.Frameworks.UI
             return index;
         }
 
-        private void HandleUILaunchData(UIObject uiObject)
+        private int HandleUILaunchData(UIObject uiObject)
         {
             UIData data = uiObject.Data;
             List<UIObject> objectList = GetCurrentUIObjectList();
             int lastWindowIndex = GetLastWindowIndex();
-            if (lastWindowIndex >= 0)
+            int insertIndex = 0;
+            int objectListMaxIndex = objectList.Count - 1;
+            for (int index = objectListMaxIndex; index >= 0; index--)
             {
-                for (int i= lastWindowIndex; i < objectList.Count; i++)
+                UIObject obj = objectList[index];
+                if (obj.SortingOrder <= uiObject.SortingOrder)
+                {
+                    insertIndex = index + 1;
+                    break;
+                }
+            }
+            objectList.Insert(insertIndex, uiObject);
+            if (uiObject.Type == UIType.Window && lastWindowIndex >= 0)
+            {
+                for (int i = lastWindowIndex; i < insertIndex; i++)
                 {
                     objectList[i].SetActive(false);
                 }
             }
+            uiObject.SetActive(insertIndex > lastWindowIndex);
 
-            objectList.Add(uiObject);
-
-            Dictionary<string, List<int>> indexListMap = GetCurrentUIIndexListMap();
-            List<int> uiIndexList = null;
-            if (indexListMap.ContainsKey(data.Name))
-            {
-                uiIndexList = indexListMap[data.Name];
-            }
-            else    
-            {
-                uiIndexList = new List<int>();
-                indexListMap[data.Name] = uiIndexList;
-            }
-
-            uiIndexList.Add(objectList.Count - 1);
-
-            uiObject.SetActive(true);
+            return insertIndex;
         }
 
-        private int GetUIIndex(UIObject uiObject)
+        private int GetTopUIIndex(UIObject uiObject)
         {
-            return GetUIIndex(uiObject.Data.Name);
+            return GetTopUIIndex(uiObject.Data.Name);
         }
-        private int GetUIIndex(string name)
+        private int GetTopUIIndex(string name)
         {
-            Dictionary<string, List<int>> indexListMap = GetCurrentUIIndexListMap();
+            List<UIObject> objectList = GetCurrentUIObjectList();
+
             int index = -1;
-            if (indexListMap.ContainsKey(name))
-            {
-                List<int> uiIndexList = indexListMap[name];
-                if (uiIndexList.Count > 0)
-                {
-                    index = uiIndexList[uiIndexList.Count - 1];
-                }
 
+            for (int i=objectList.Count - 1; i >= 0; i--)
+            {
+                UIObject uiObject = objectList[i];
+                if (uiObject.Data.Name == name)
+                {
+                    index = i;
+                    break;
+                }
             }
+
             return index;
         }
 

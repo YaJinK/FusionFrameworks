@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 
 namespace Fusion.Frameworks{
@@ -9,6 +10,14 @@ namespace Fusion.Frameworks{
             if (component == null)
                 component = gameObject.AddComponent<T>();
             return component;
+        }
+
+        public static void SetOverrideSorting(this Canvas canvas, bool value)
+        {
+            bool originActive = canvas.gameObject.activeSelf;
+            canvas.gameObject.SetActive(true);
+            canvas.overrideSorting = value;
+            canvas.gameObject.SetActive(originActive);
         }
     }
 }

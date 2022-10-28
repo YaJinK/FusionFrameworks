@@ -9,6 +9,11 @@ namespace Fusion.Frameworks.UI
         Standard,
         SingleTop
     }
+    public enum UIType
+    {
+        Window,
+        Pop
+    }
 
     public class UIData
     {
@@ -22,6 +27,9 @@ namespace Fusion.Frameworks.UI
     {
         protected GameObject gameObject = null;
         protected UIData data = null;
+
+        protected UIType type = UIType.Window;
+        protected int sortingOrder = 0;
 
         private bool isChild = false;
         protected UIObject parent = null;
@@ -37,6 +45,9 @@ namespace Fusion.Frameworks.UI
                 SetActive(active);
             } 
         }
+
+        public UIType Type { get => type; }
+        public int SortingOrder { get => sortingOrder; }
 
         public UIObject(UIData data)
         {
