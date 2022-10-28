@@ -69,6 +69,12 @@ namespace Fusion.Frameworks.UI
 
         private float zDistance = -5.0f;
 
+        /// <summary>
+        /// 同步运行UI页面，页面会被UIManager管理
+        /// </summary>
+        /// <param name="path">UI Prefab的路径</param>
+        /// <param name="data">UI页面数据</param>
+        /// <returns></returns>
         public UIObject Launch(string path, UIData data = null)
         {
             if (data == null)
@@ -98,6 +104,13 @@ namespace Fusion.Frameworks.UI
             }
         }
 
+        /// <summary>
+        /// 同步创建UI自由页面，不会被UIManager管理
+        /// </summary>
+        /// <param name="path">UI Prefab的路径</param>
+        /// <param name="data">UI页面数据</param>
+        /// <param name="rootObject">页面父节点</param>
+        /// <returns></returns>
         public UIObject CreateUIObject(string path, UIData data = null, GameObject rootObject = null)
         {
             if (rootObject == null)
@@ -124,6 +137,12 @@ namespace Fusion.Frameworks.UI
             return uiObject;
         }
 
+        /// <summary>
+        /// 异步运行UI页面，页面会被UIManager管理，同一个Prefab只能同时运行一个
+        /// </summary>
+        /// <param name="path">UI Prefab的路径</param>
+        /// <param name="data">UI页面数据</param>
+        /// <returns></returns>
         public UIObject LaunchAsync(string path, UIData data = null)
         {
             if (data == null)
@@ -149,27 +168,14 @@ namespace Fusion.Frameworks.UI
             }
         }
 
-        public UIObject CreateUIObjectAsyncHandling(string path, UIData data)
-        {
-            Dictionary<string, AsyncHandlingData> asyncHandling = GetCurrentAsyncHandling();
-            if (asyncHandling.ContainsKey(path))
-            {
-                return asyncHandling[path].uiObject;
-            }
-            else
-            {
-                UIObject uiObject = CreateUIObjectAsync(path, data, null, delegate (UIObject uiObject)
-                {
-                    uiObject.GameObject.transform.localPosition = new Vector3(0, 0, zDistance * asyncHandling[path].objectIndex);
-                    asyncHandling.Remove(path);
-                });
-                asyncHandling[path] = new AsyncHandlingData();
-                asyncHandling[path].uiObject = uiObject;
-                asyncHandling[path].objectIndex = HandleUILaunchData(uiObject);
-                return uiObject;
-            }
-        }
-
+        /// <summary>
+        /// 异步创建UI自由页面，不会被UIManager管理
+        /// </summary>
+        /// <param name="path">UI Prefab的路径</param>
+        /// <param name="data">UI页面数据</param>
+        /// <param name="rootObject">页面父节点</param>
+        /// <param name="finishCallback">创建完成后回调</param>
+        /// <returns></returns>
         public UIObject CreateUIObjectAsync(string path, UIData data = null, GameObject rootObject = null, Action<UIObject> finishCallback = null)
         {
             if (rootObject == null)
@@ -202,8 +208,18 @@ namespace Fusion.Frameworks.UI
             return uiObject;
         }
 
+        /// <summary>
+        /// 关闭UI页面，正在异步加载中的页面不能被关闭
+        /// </summary>
+        /// <param name="uiObject">UI对象</param>
+        /// <param name="updateLast">是否更新上一个页面</param>
         public void Finish(UIObject uiObject, bool updateLast = false)
         {
+            if (!uiObject.CheckValid())
+            {
+                return;
+            }
+
             int index = GetTopUIIndex(uiObject);
             List<UIObject> objectList = GetCurrentUIObjectList();
             objectList.RemoveAt(index);
@@ -224,6 +240,27 @@ namespace Fusion.Frameworks.UI
                 }
             }
             AssetsUtility.Release(uiObject.GameObject);
+        }
+
+        private UIObject CreateUIObjectAsyncHandling(string path, UIData data)
+        {
+            Dictionary<string, AsyncHandlingData> asyncHandling = GetCurrentAsyncHandling();
+            if (asyncHandling.ContainsKey(path))
+            {
+                return asyncHandling[path].uiObject;
+            }
+            else
+            {
+                UIObject uiObject = CreateUIObjectAsync(path, data, null, delegate (UIObject uiObject)
+                {
+                    uiObject.GameObject.transform.localPosition = new Vector3(0, 0, zDistance * asyncHandling[path].objectIndex);
+                    asyncHandling.Remove(path);
+                });
+                asyncHandling[path] = new AsyncHandlingData();
+                asyncHandling[path].uiObject = uiObject;
+                asyncHandling[path].objectIndex = HandleUILaunchData(uiObject);
+                return uiObject;
+            }
         }
 
         private List<UIObject> GetCurrentUIObjectList()
@@ -320,8 +357,6 @@ namespace Fusion.Frameworks.UI
             uiObject.SetActive(true);
             return uiObject;
         }
-
-        
     }
 }
 
