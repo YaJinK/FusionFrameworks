@@ -24,11 +24,11 @@ public class Page1 : UIObject
         {
             Page2Data page2Data = new Page2Data();
             page2Data.spriteName = "Sprites/9";
-            UIManager.Instance.LaunchAsync("Prefabs/UI/Page2", page2Data);
+            UIManager.Instance.Launch("Prefabs/UI/Page2", page2Data);
         });
 
-        Page2Data page2Data = new Page2Data();
-        page2Data.spriteName = "Sprites/7";
-        UIObject page2 = LaunchChildAsync("Prefabs/UI/Page2", page2Data);
+        //Page2Data page2Data = new Page2Data();
+        //page2Data.spriteName = "Sprites/7";
+        //UIObject page2 = LaunchChildAsync("Prefabs/UI/Page2", page2Data);
     }
 }

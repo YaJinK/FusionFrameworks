@@ -12,7 +12,8 @@ public class Page2 : UIObject
 {
     public Page2(UIData data) : base(data)
     {
-
+        //type = UIType.Pop;
+        sortingOrder = 10000;
     }
 
     public override void Init()
@@ -30,7 +31,6 @@ public class Page2 : UIObject
         UIUtility.RegisterButtonAction(goBtn, delegate ()
         {
             UIData data = new UIData();
-            data.LaunchMode = UILaunchMode.SingleTop;
             UIManager.Instance.Launch("Prefabs/UI/Page1", data);
         });
 

@@ -35,7 +35,7 @@ public class Test : MonoBehaviour
         //    GameObject cubeInstance = Instantiate(gameObject);
         //    cubeInstance.transform.position = Vector3.zero;
         //});
-        UIManager.Instance.LaunchAsync("Prefabs/UI/Page1", new UIData { LaunchMode = UILaunchMode.SingleTop});
+        UIManager.Instance.Launch("Prefabs/UI/Page1", new UIData { LaunchMode = UILaunchMode.SingleTop});
     }
 
     // Update is called once per frame
