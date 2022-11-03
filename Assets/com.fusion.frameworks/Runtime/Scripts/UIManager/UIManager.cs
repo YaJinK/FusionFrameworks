@@ -22,32 +22,35 @@ namespace Fusion.Frameworks.UI
                 {
                     GameObject uiManagerObject = new GameObject("UIManager");
                     instance = uiManagerObject.AddComponent<UIManager>();
-                    GameObject canvasObject = GameObject.Find("Canvas");
+                    GameObject canvasObject = GameObject.Find("UI/Canvas");
                     if (canvasObject == null)
                     {
-                        Debug.LogError("Can not find Canvas, please create it");
+                        Debug.LogError("Can not find UI/Canvas in Hierarchy, please create it");
                     } else
                     {
+                        GameObject uiObject = GameObject.Find("UI");
                         instance.CanvasObject = canvasObject;
+                        Transform rootTransform = canvasObject.transform.Find("Root");
+                        if (rootTransform == null)
+                        {
+                            GameObject rootObject = new GameObject("Root");
+                            RectTransform rectTransform = rootObject.AddComponent<RectTransform>();
+                            rootObject.transform.SetParent(canvasObject.transform);
+                            rectTransform.anchorMin = Vector2.zero;
+                            rectTransform.anchorMax = Vector2.one;
+                            rectTransform.anchoredPosition3D = Vector3.zero;
+                            rectTransform.localScale = Vector3.one;
+                            rectTransform.sizeDelta = Vector2.zero;
+                            instance.rootObject = rootObject;
+                        }
+                        else
+                        {
+                            instance.rootObject = rootTransform.gameObject;
+                        }
+                        DontDestroyOnLoad(uiManagerObject);
+                        DontDestroyOnLoad(uiObject);
                     }
-                    Transform rootTransform = canvasObject.transform.Find("Root");
-                    if (rootTransform == null)
-                    {
-                        GameObject rootObject = new GameObject("Root");
-                        RectTransform rectTransform = rootObject.AddComponent<RectTransform>();
-                        rootObject.transform.SetParent(canvasObject.transform);
-                        rectTransform.anchorMin = Vector2.zero;
-                        rectTransform.anchorMax = Vector2.one;
-                        rectTransform.anchoredPosition3D = Vector3.zero;
-                        rectTransform.localScale = Vector3.one;
-                        rectTransform.sizeDelta = Vector2.zero;
-                        instance.rootObject = rootObject;
-                    } else
-                    {
-                        instance.rootObject = rootTransform.gameObject;
-                    }
-                    DontDestroyOnLoad(uiManagerObject);
-                    DontDestroyOnLoad(canvasObject);
+                    
                 }
                 return instance;
             }
