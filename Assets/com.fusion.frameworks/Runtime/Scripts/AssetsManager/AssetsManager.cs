@@ -16,6 +16,13 @@ namespace Fusion.Frameworks.Assets
         private static AssetBundleManifest assetBundleManifest;
         private static Dictionary<string, AssetBundleCreateRequest> asyncCreateRequests = new Dictionary<string, AssetBundleCreateRequest>();
 
+        public static string LoadPath {
+            get
+            {
+                return Application.streamingAssetsPath;
+            }
+        }
+
         public static AssetsManager Instance { 
             get 
             {
@@ -25,7 +32,7 @@ namespace Fusion.Frameworks.Assets
                     instance = assetsManagerObject.AddComponent<AssetsManager>();
                     DontDestroyOnLoad(assetsManagerObject);
                    
-                    AssetBundle assetBundle = AssetBundle.LoadFromFile(Path.Combine(AssetsConfig.packagePath, AssetsConfig.packagePath.Substring(AssetsConfig.packagePath.LastIndexOf("/") + 1)));
+                    AssetBundle assetBundle = AssetBundle.LoadFromFile(Path.Combine(LoadPath, "AssetBundleManifest"));
                     assetBundleManifest = assetBundle.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
                 }
                 return instance; 
@@ -41,7 +48,7 @@ namespace Fusion.Frameworks.Assets
             AssetBundle assetBundle = AssetReferences.Instance.Get(assetBundleName);
             if (assetBundle == null)
             {
-                assetBundle = AssetBundle.LoadFromFile(Path.Combine(AssetsConfig.packagePath, assetBundleName));
+                assetBundle = AssetBundle.LoadFromFile(Path.Combine(LoadPath, assetBundleName));
             }
             AssetReferences.Instance.Reference(assetBundle);
             return assetBundle;
@@ -57,7 +64,7 @@ namespace Fusion.Frameworks.Assets
                 assetBundles[i] = AssetReferences.Instance.Get(assetBundleDependencies[i]);
                 if (assetBundles[i] == null)
                 {
-                    assetBundles[i] = AssetBundle.LoadFromFile(Path.Combine(AssetsConfig.packagePath, assetBundleDependencies[i]));
+                    assetBundles[i] = AssetBundle.LoadFromFile(Path.Combine(LoadPath, assetBundleDependencies[i]));
                 }
                 AssetReferences.Instance.Reference(assetBundles[i]);
             }
@@ -74,7 +81,7 @@ namespace Fusion.Frameworks.Assets
                 AssetBundleCreateRequest assetBundleCreateRequest;
                 if (!asyncCreateRequests.ContainsKey(assetBundleName))
                 {
-                    assetBundleCreateRequest = AssetBundle.LoadFromFileAsync(Path.Combine(AssetsConfig.packagePath, assetBundleName));
+                    assetBundleCreateRequest = AssetBundle.LoadFromFileAsync(Path.Combine(LoadPath, assetBundleName));
                     asyncCreateRequests[assetBundleName] = assetBundleCreateRequest;
                     yield return assetBundleCreateRequest;
                 } else
@@ -108,7 +115,7 @@ namespace Fusion.Frameworks.Assets
                     AssetBundleCreateRequest assetBundleCreateRequest;
                     if (!asyncCreateRequests.ContainsKey(assetBundleDependencies[i]))
                     {
-                        assetBundleCreateRequest = AssetBundle.LoadFromFileAsync(Path.Combine(AssetsConfig.packagePath, assetBundleDependencies[i]));
+                        assetBundleCreateRequest = AssetBundle.LoadFromFileAsync(Path.Combine(LoadPath, assetBundleDependencies[i]));
                         asyncCreateRequests[assetBundleDependencies[i]] = assetBundleCreateRequest;
                     } else
                     {

@@ -10,8 +10,6 @@ namespace Fusion.Frameworks.Assets
     /// </summary>
     public static class AssetsConfig
     {
-        public static string packagePath = Application.streamingAssetsPath;
-
         public static readonly string assetBundleSuffix = "";
 
         private static Dictionary<string, string> spritePathAtlasNameMap = null;

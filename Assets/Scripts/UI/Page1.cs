@@ -2,33 +2,36 @@ using Fusion.Frameworks.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Page1 : UIObject
+namespace Prefabs.UI
 {
-    public Page1(UIData data) : base(data)
+    public class Page1 : UIObject
     {
-
-    }
-
-    public override void Init()
-    {
-        base.Init();
-
-        GameObject backBtn = UIUtility.Find(gameObject, "BackBtn");
-        UIUtility.RegisterButtonAction(backBtn, delegate ()
+        public Page1(UIData data) : base(data)
         {
-            Finish();
-        });
 
-        GameObject goBtn = UIUtility.Find(gameObject, "GoBtn");
-        UIUtility.RegisterButtonAction(goBtn, delegate ()
+        }
+
+        public override void Init()
         {
-            Page2Data page2Data = new Page2Data();
-            page2Data.spriteName = "Sprites/9";
-            UIManager.Instance.Launch("Prefabs/UI/Page2", page2Data);
-        });
+            base.Init();
 
-        //Page2Data page2Data = new Page2Data();
-        //page2Data.spriteName = "Sprites/7";
-        //UIObject page2 = LaunchChildAsync("Prefabs/UI/Page2", page2Data);
+            GameObject backBtn = UIUtility.Find(gameObject, "BackBtn");
+            UIUtility.RegisterButtonAction(backBtn, delegate ()
+            {
+                Finish();
+            });
+
+            GameObject goBtn = UIUtility.Find(gameObject, "GoBtn");
+            UIUtility.RegisterButtonAction(goBtn, delegate ()
+            {
+                Page2Data page2Data = new Page2Data();
+                page2Data.spriteName = "Sprites/9";
+                UIManager.Instance.Launch("Prefabs/UI/Page2", page2Data);
+            });
+
+            //Page2Data page2Data = new Page2Data();
+            //page2Data.spriteName = "Sprites/7";
+            //UIObject page2 = LaunchChildAsync("Prefabs/UI/Page2", page2Data);
+        }
     }
 }

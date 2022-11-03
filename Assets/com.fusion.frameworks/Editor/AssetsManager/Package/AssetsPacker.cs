@@ -56,7 +56,6 @@ namespace Fusion.Frameworks.Assets.Editor
         [MenuItem("AssetsManager/ClearStreamingAssets")]
         private static void ClearStreamingAssets()
         {
-            string packagePath = AssetsConfig.packagePath;
             if (AssetDatabase.IsValidFolder("Assets/StreamingAssets"))
             {
                 AssetDatabase.DeleteAsset("Assets/StreamingAssets");
@@ -64,26 +63,35 @@ namespace Fusion.Frameworks.Assets.Editor
             AssetDatabase.Refresh();
         }
 
-        [MenuItem("AssetsManager/PackAssetBundle")]
-        private static void PackAssetBundle()
+        private static void PackAssetBundle(BuildTarget buildTarget)
         {
-            string packagePath = AssetsConfig.packagePath;
             if (!AssetDatabase.IsValidFolder("Assets/StreamingAssets"))
             {
                 AssetDatabase.CreateFolder("Assets", "StreamingAssets");
             }
 
-            BuildPipeline.BuildAssetBundles(packagePath, BuildAssetBundleOptions.None, BuildTarget.StandaloneWindows);
+            BuildPipeline.BuildAssetBundles(Application.streamingAssetsPath, BuildAssetBundleOptions.None, buildTarget);
 
+            AssetDatabase.Refresh();
+            AssetDatabase.RenameAsset("Assets/StreamingAssets/StreamingAssets", "AssetBundleManifest");
+            AssetDatabase.RenameAsset("Assets/StreamingAssets/StreamingAssets.manifest", "AssetBundleManifest.manifest");
             AssetDatabase.Refresh();
         }
 
-        [MenuItem("AssetsManager/Build Assets")]
-        private static void BuildAssets()
+        [MenuItem("AssetsManager/Build Assets (Android)")]
+        private static void BuildAssetsAndroid()
         {
             ClearStreamingAssets();
             Pack();
-            PackAssetBundle();
+            PackAssetBundle(BuildTarget.Android);
+        }
+
+        [MenuItem("AssetsManager/Build Assets (PC x86)")]
+        private static void BuildAssetsPC()
+        {
+            ClearStreamingAssets();
+            Pack();
+            PackAssetBundle(BuildTarget.StandaloneWindows);
         }
 
         private static void SetAssetBundleName(AssetImporter assetImporter, BuildProperty buildProperty, FileInfo fileInfo)

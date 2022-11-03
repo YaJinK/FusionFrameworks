@@ -47,6 +47,7 @@ namespace Fusion.Frameworks.UI
                         instance.rootObject = rootTransform.gameObject;
                     }
                     DontDestroyOnLoad(uiManagerObject);
+                    DontDestroyOnLoad(canvasObject);
                 }
                 return instance;
             }
@@ -86,7 +87,7 @@ namespace Fusion.Frameworks.UI
             {
                 UIObject uiObject = CreateUIObject(path, data);
                 int objectIndex = HandleUILaunchData(uiObject);
-                uiObject.GameObject.transform.localPosition = new Vector3(0, 0, zDistance * objectIndex);
+                SetUIOffsetPosition(uiObject, objectIndex);
                 return uiObject;
             } else
             {
@@ -98,7 +99,7 @@ namespace Fusion.Frameworks.UI
                 {
                     UIObject uiObject = CreateUIObject(path, data);
                     int objectIndex = HandleUILaunchData(uiObject);
-                    uiObject.GameObject.transform.localPosition = new Vector3(0, 0, zDistance * objectIndex);
+                    SetUIOffsetPosition(uiObject, objectIndex);
                     return uiObject;
                 }
             }
@@ -123,7 +124,7 @@ namespace Fusion.Frameworks.UI
             }
             data.Name = path;
             GameObject gameObject = AssetsUtility.CreateGameObject(path, rootObject);
-            string className = data.Name.Substring(data.Name.LastIndexOf("/") + 1);
+            string className = data.Name.Replace("/", ".");
             Type classType = Type.GetType($"{className}, Assembly-CSharp");
             UIObject uiObject = classType != null ? (UIObject)Activator.CreateInstance(classType, data) : new UIObject(data);
             uiObject.GameObject = gameObject;
@@ -187,7 +188,7 @@ namespace Fusion.Frameworks.UI
                 data = new UIData();
             }
             data.Name = path;
-            string className = data.Name.Substring(data.Name.LastIndexOf("/") + 1);
+            string className = data.Name.Replace("/", ".");
             Type classType = Type.GetType($"{className}, Assembly-CSharp");
             UIObject uiObject = classType != null ? (UIObject)Activator.CreateInstance(classType, data) : new UIObject(data);
             AssetsUtility.CreateGameObjectAsync(path, rootObject, false, delegate(GameObject gameObject)
@@ -242,6 +243,18 @@ namespace Fusion.Frameworks.UI
             AssetsUtility.Release(uiObject.GameObject);
         }
 
+        private void SetUIOffsetPosition(UIObject uiObject, int index)
+        {
+            if (index > 0)
+            {
+                List<UIObject> objectList = GetCurrentUIObjectList();
+                uiObject.GameObject.transform.localPosition = new Vector3(0, 0, zDistance + objectList[index - 1].GameObject.transform.localPosition.z);
+            } else
+            {
+                uiObject.GameObject.transform.localPosition = Vector3.zero;
+            }
+
+        }
         private UIObject CreateUIObjectAsyncHandling(string path, UIData data)
         {
             Dictionary<string, AsyncHandlingData> asyncHandling = GetCurrentAsyncHandling();
@@ -253,7 +266,7 @@ namespace Fusion.Frameworks.UI
             {
                 UIObject uiObject = CreateUIObjectAsync(path, data, null, delegate (UIObject uiObject)
                 {
-                    uiObject.GameObject.transform.localPosition = new Vector3(0, 0, zDistance * asyncHandling[path].objectIndex);
+                    SetUIOffsetPosition(uiObject, asyncHandling[path].objectIndex);
                     asyncHandling.Remove(path);
                 });
                 asyncHandling[path] = new AsyncHandlingData();
