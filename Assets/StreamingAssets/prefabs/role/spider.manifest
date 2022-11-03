@@ -1,0 +1,42 @@
+ManifestFileVersion: 0
+CRC: 3753657392
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 705ad019aee160e6e8f005024d714096
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 8786f2a2fef9a760758dd07644920454
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 74
+  Script: {instanceID: 0}
+- Class: 91
+  Script: {instanceID: 0}
+- Class: 95
+  Script: {instanceID: 0}
+- Class: 137
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/GameAssets/Prefabs/Role/Spider/spider_DIFF.png
+- Assets/GameAssets/Prefabs/Role/Spider/SpiderAnimation.controller
+- Assets/GameAssets/Prefabs/Role/Spider/Hood_Spidergwen_Geo.mesh
+- Assets/GameAssets/Prefabs/Role/Spider/Take 001.anim
+- Assets/GameAssets/Prefabs/Role/Spider/Spider.prefab
+- Assets/GameAssets/Prefabs/Role/Spider/01 - Default.mat
+- Assets/GameAssets/Prefabs/Role/Spider/spider_SPEC.png
+- Assets/GameAssets/Prefabs/Role/Spider/SpiderGwen_Body_Geo.mesh
+Dependencies: []

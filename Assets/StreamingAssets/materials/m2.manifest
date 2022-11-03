@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 712107038
+CRC: 3024290641
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: ac2ec056d6b2e3d8819e55c349c6385b
+    Hash: a46a895bc177ab6f860693839a69c246
   TypeTreeHash:
     serializedVersion: 2
     Hash: d5656af68283edd8be48ea29d7c443ed
@@ -20,4 +20,4 @@ Assets:
 - Assets/GameAssets/Materials/M2.mat
 Dependencies:
 - E:/Work/Project/FusionFrameworks/Assets/StreamingAssets/shaders/s
-- E:/Work/Project/FusionFrameworks/Assets/StreamingAssets/sprites/atlas@3
+- E:/Work/Project/FusionFrameworks/Assets/StreamingAssets/sprites/equips/atlas@3

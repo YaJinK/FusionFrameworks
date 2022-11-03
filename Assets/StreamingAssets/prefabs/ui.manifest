@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 4249958374
+CRC: 8342195
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 045b88cecd1a4f3f06d26f5bb40ffc4c
+    Hash: f892ac3c087a356075c358421e745d4c
   TypeTreeHash:
     serializedVersion: 2
     Hash: 0de3e80d70919de1522ae6ba4b4a5e20
@@ -79,6 +79,7 @@ SerializeReferenceClassIdentifiers:
 - AssemblyName: UnityEngine.UI
   ClassName: UnityEngine.UI.SpriteState
 Assets:
+- Assets/GameAssets/Prefabs/UI/Page3.prefab
 - Assets/GameAssets/Prefabs/UI/Page1.prefab
 - Assets/GameAssets/Prefabs/UI/Page2.prefab
 Dependencies: []

@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 597648708
+CRC: 941918287
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: fbd6d10ad9e99f061d350fbcdad679b8
+    Hash: e8f7d32b371cdbdc8d551901aa8526b6
   TypeTreeHash:
     serializedVersion: 2
     Hash: d5656af68283edd8be48ea29d7c443ed
@@ -20,4 +20,4 @@ Assets:
 - Assets/GameAssets/Materials/M1.mat
 Dependencies:
 - E:/Work/Project/FusionFrameworks/Assets/StreamingAssets/shaders/s
-- E:/Work/Project/FusionFrameworks/Assets/StreamingAssets/sprites/e_metal05
+- E:/Work/Project/FusionFrameworks/Assets/StreamingAssets/sprites/equips/e_metal05
