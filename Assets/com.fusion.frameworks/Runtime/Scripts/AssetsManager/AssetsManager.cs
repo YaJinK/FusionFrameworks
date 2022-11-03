@@ -71,7 +71,7 @@ namespace Fusion.Frameworks.Assets
             return assetBundles;
         }
 
-        public IEnumerator LoadAssetBundleAsync(string path, Action<AssetBundle> finishCallback)
+        public IEnumerator LoadAssetBundleAsync(string path, Action<AssetBundle> finishCallback = null)
         {
             yield return LoadAssetBundleDependenciesAsync(path);
             string assetBundleName = AssetsConfig.GetAssetBundleName(path);
@@ -98,7 +98,10 @@ namespace Fusion.Frameworks.Assets
             }
             
             AssetReferences.Instance.Reference(assetBundle);
-            finishCallback(assetBundle);
+            if (finishCallback != null)
+            {
+                finishCallback(assetBundle);
+            }
         }
 
         public IEnumerator LoadAssetBundleDependenciesAsync(string path, Action<AssetBundle[]> finishCallback = null)

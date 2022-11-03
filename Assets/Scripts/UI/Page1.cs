@@ -25,7 +25,7 @@ namespace Prefabs.UI
             UIUtility.RegisterButtonAction(goBtn, delegate ()
             {
                 Page2Data page2Data = new Page2Data();
-                page2Data.spriteName = "Sprites/9";
+                page2Data.spriteName = "Sprites/Equips/9";
                 UIManager.Instance.Launch("Prefabs/UI/Page2", page2Data);
             });
 

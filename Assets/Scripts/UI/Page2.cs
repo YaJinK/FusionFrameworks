@@ -15,7 +15,6 @@ namespace Prefabs.UI
         public Page2(UIData data) : base(data)
         {
             //type = UIType.Pop;
-            sortingOrder = 10000;
         }
 
         public override void Init()
@@ -33,7 +32,7 @@ namespace Prefabs.UI
             UIUtility.RegisterButtonAction(goBtn, delegate ()
             {
                 UIData data = new UIData();
-                UIManager.Instance.Launch("Prefabs/UI/Page1", data);
+                UIManager.Instance.Launch("Prefabs/UI/Page3", data);
             });
 
             GameObject image = UIUtility.Find(gameObject, "Image");

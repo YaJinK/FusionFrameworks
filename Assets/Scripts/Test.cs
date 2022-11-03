@@ -1,14 +1,13 @@
-using Fusion.Frameworks.Assets;
+using Fusion.Frameworks.Scenes;
 using Fusion.Frameworks.UI;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Reflection;
+using System.Diagnostics;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Test : MonoBehaviour
 {
+    ScenesManager.LoadAsyncOperation loadAsyncOperation = null;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,12 +34,18 @@ public class Test : MonoBehaviour
         //    GameObject cubeInstance = Instantiate(gameObject);
         //    cubeInstance.transform.position = Vector3.zero;
         //});
-        UIManager.Instance.Launch("Prefabs/UI/Page1", new UIData { LaunchMode = UILaunchMode.SingleTop});
+        UIManager.Instance.Launch("Prefabs/UI/Page3", new UIData { LaunchMode = UILaunchMode.SingleTop });
+        ScenesManager.LoadAsyncTask loadAsyncTask = new ScenesManager.LoadAsyncTask();
+        loadAsyncTask.AddAdditive("Scenes/Scene2");
+        loadAsyncTask.AddAdditive("Scenes/Scene2");
+        loadAsyncTask.AddAdditive("Scenes/Scene2");
+        loadAsyncOperation = ScenesManager.Instance.Schedule(loadAsyncTask);
     }
 
     // Update is called once per frame
     void Update()
     {
+        UnityEngine.Debug.LogError(loadAsyncOperation.Progress);
     }
 
     private void OnDisable()

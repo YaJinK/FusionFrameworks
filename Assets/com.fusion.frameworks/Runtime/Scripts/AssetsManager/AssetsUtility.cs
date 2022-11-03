@@ -36,6 +36,7 @@ namespace Fusion.Frameworks.Assets
 
             Action<UnityEngine.Object> callback = delegate (UnityEngine.Object asset)
             {
+                image.enabled = true;
                 image.sprite = asset as Sprite;
             };
 

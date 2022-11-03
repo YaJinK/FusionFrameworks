@@ -103,7 +103,7 @@ namespace Fusion.Frameworks.Assets.Editor
             else if (buildProperty.type == BuildType.Folder)
             {
                 assetImporter.assetBundleName = path.Substring(path.IndexOf(filePathPrefix) + filePathPrefix.Length + 1) + assetBundleSuffix;
-                assetBundlesNameMap.Add(path.Substring(path.IndexOf(filePathPrefix) + filePathPrefix.Length + 1) + "/" + fileInfo.Name.Substring(0, fileInfo.Name.LastIndexOf(".")), assetImporter.assetBundleName);
+                assetBundlesNameMap[path.Substring(path.IndexOf(filePathPrefix) + filePathPrefix.Length + 1) + "/" + fileInfo.Name.Substring(0, fileInfo.Name.LastIndexOf("."))] = assetImporter.assetBundleName;
             }
         }
 
@@ -194,7 +194,7 @@ namespace Fusion.Frameworks.Assets.Editor
                             spriteAtlas.SetPlatformSettings(texImpPlatSettings);
 
                             string abName = releativePath.Substring(filePathPrefix.Length + 1) + "/" + atlasName + assetBundleSuffix;
-                            assetBundlesNameMap.Add(releativePath.Substring(filePathPrefix.Length + 1) + "/" + fileInfo.Name.Substring(0, fileInfo.Name.LastIndexOf(".")), abName.ToLower());
+                            assetBundlesNameMap[releativePath.Substring(filePathPrefix.Length + 1) + "/" + fileInfo.Name.Substring(0, fileInfo.Name.LastIndexOf("."))] = abName.ToLower();
                             assetImporter.assetBundleName = abName;
                             AssetDatabase.SaveAssets();
 
