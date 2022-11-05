@@ -25,7 +25,7 @@ namespace Fusion.Frameworks.UI
                     GameObject canvasObject = GameObject.Find("UI/Canvas");
                     if (canvasObject == null)
                     {
-                        Debug.LogError("Can not find UI/Canvas in Hierarchy, please create it");
+                        Debug.LogError("Can not find UI/Canvas in Hierarchy, please drag it from Prefab/UI/UI");
                     } else
                     {
                         GameObject uiObject = GameObject.Find("UI");
@@ -48,7 +48,6 @@ namespace Fusion.Frameworks.UI
                             instance.rootObject = rootTransform.gameObject;
                         }
                         DontDestroyOnLoad(uiManagerObject);
-                        DontDestroyOnLoad(uiObject);
                     }
                     
                 }
@@ -62,14 +61,12 @@ namespace Fusion.Frameworks.UI
         private GameObject rootObject = null;
 
         private List<UIObject> objectList = new List<UIObject>(4);
-        private Dictionary<string, List<int>> indexListMap = new Dictionary<string, List<int>>();
         private Dictionary<string, AsyncHandlingData> asyncHandling = new Dictionary<string, AsyncHandlingData>();
 
         private class AsyncHandlingData {
             public UIObject uiObject = null;
             public int objectIndex = 0;
         }
-
 
         private float zDistance = -5.0f;
 
@@ -244,6 +241,44 @@ namespace Fusion.Frameworks.UI
                 }
             }
             AssetsUtility.Release(uiObject.GameObject);
+            uiObject.GameObject = null;
+        }
+
+        public void Clear()
+        {
+            for (int index = 0; index < objectList.Count; index++)
+            {
+                UIObject uiObject = objectList[index];
+                AssetsUtility.Release(uiObject.GameObject);
+                uiObject.GameObject = null;
+            }
+            objectList.Clear();
+            asyncHandling.Clear();
+        }
+
+        public void Restore(List<UIObject> restoreList)
+        {
+            Clear();
+            for (int index = 0; index < restoreList.Count; index++)
+            {
+                UIObject uiObject = restoreList[index];
+                if (uiObject.GameObject == null)
+                {
+                    GameObject gameObject = AssetsUtility.CreateGameObject(uiObject.Data.Name, rootObject);
+                    uiObject.GameObject = gameObject;
+                }
+                objectList.Add(uiObject);
+                uiObject.Init();
+                uiObject.Update();
+            }
+        }
+
+        public void ForEach(Action<UIObject> foreachCallback)
+        {
+            for (int index = 0; index < objectList.Count; index++)
+            {
+                foreachCallback(objectList[index]);
+            }
         }
 
         private void SetUIOffsetPosition(UIObject uiObject, int index)
@@ -260,7 +295,6 @@ namespace Fusion.Frameworks.UI
         }
         private UIObject CreateUIObjectAsyncHandling(string path, UIData data)
         {
-            Dictionary<string, AsyncHandlingData> asyncHandling = GetCurrentAsyncHandling();
             if (asyncHandling.ContainsKey(path))
             {
                 return asyncHandling[path].uiObject;
@@ -269,8 +303,14 @@ namespace Fusion.Frameworks.UI
             {
                 UIObject uiObject = CreateUIObjectAsync(path, data, null, delegate (UIObject uiObject)
                 {
-                    SetUIOffsetPosition(uiObject, asyncHandling[path].objectIndex);
-                    asyncHandling.Remove(path);
+                    if (asyncHandling.ContainsKey(path) && objectList.Contains(uiObject))
+                    {
+                        SetUIOffsetPosition(uiObject, asyncHandling[path].objectIndex);
+                        asyncHandling.Remove(path);
+                    } else
+                    {
+                        AssetsUtility.Release(uiObject.GameObject);
+                    }
                 });
                 asyncHandling[path] = new AsyncHandlingData();
                 asyncHandling[path].uiObject = uiObject;
@@ -284,11 +324,6 @@ namespace Fusion.Frameworks.UI
             return objectList;
         }
      
-        private Dictionary<string, AsyncHandlingData> GetCurrentAsyncHandling()
-        {
-            return asyncHandling;
-        }
-
         private int GetLastWindowIndex()
         {
             List<UIObject> objectList = GetCurrentUIObjectList();

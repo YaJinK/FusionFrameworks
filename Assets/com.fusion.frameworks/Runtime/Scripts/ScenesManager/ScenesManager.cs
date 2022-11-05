@@ -1,4 +1,5 @@
 ﻿using Fusion.Frameworks.Assets;
+using Fusion.Frameworks.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,12 +8,25 @@ using UnityEngine.SceneManagement;
 
 namespace Fusion.Frameworks.Scenes
 {
+    /// <summary>
+    /// 场景加载类
+    /// </summary>
+    [DisallowMultipleComponent]
     public class ScenesManager : MonoBehaviour
     {
+        /// <summary>
+        ///异步加载任务
+        ///一个任务下包含需包含 SingleScene <= 0 AdditiveScenes >= 0
+        ///同一任务下的所有Scenes共享加载进度和加载完成标志
+        /// </summary>
         public class LoadAsyncTask {
             private SceneData singleData = null;
             private int totalWeight = 0;
             private LoadAsyncOperation loadAsyncOperation = null;
+
+            public Action finishCallback = null;
+
+            private List<SceneDataHandler> sceneDataHandlers = null;
 
             public class SceneData {
                 private string name;
@@ -38,6 +52,7 @@ namespace Fusion.Frameworks.Scenes
             public int TotalWeight { get => totalWeight; }
             public SceneData SingleData { get => singleData; }
             public List<SceneData> AdditiveList { get => additiveList; }
+            public List<SceneDataHandler> SceneDataHandlers { get => sceneDataHandlers; }
 
             public LoadAsyncTask() : this(null)
             {
@@ -71,6 +86,15 @@ namespace Fusion.Frameworks.Scenes
                 totalWeight += additiveData.weight;
             }
 
+            public void AddSceneDataHandler(SceneDataHandler sceneDataHandler)
+            {
+                if (sceneDataHandlers == null)
+                {
+                    sceneDataHandlers = new List<SceneDataHandler>(2);
+                }
+                sceneDataHandlers.Add(sceneDataHandler);
+            }
+
             private void LoadAdditive(int index)
             {
                 if (additiveList == null || index >= additiveList.Count)
@@ -87,6 +111,16 @@ namespace Fusion.Frameworks.Scenes
 
             public void Schedule()
             {
+                if (isScheduling)
+                {
+                    return;
+                }
+
+                if (sceneDataHandlers != null)
+                {
+                    scenesDataStorage.Save(sceneDataHandlers);
+                }
+
                 isScheduling = true;
                 Action singleFinishCallback = delegate
                 {
@@ -107,6 +141,10 @@ namespace Fusion.Frameworks.Scenes
             }
         }
 
+        /// <summary>
+        /// 异步加载任务结果
+        /// 包含加载进度和完成标志
+        /// </summary>
         public class LoadAsyncOperation
         {
             private float progress = 0;
@@ -163,13 +201,28 @@ namespace Fusion.Frameworks.Scenes
                         }
                     }
 
-                    isDone = currentIsDone;
-                    progress = currentWeight / loadAsyncTask.TotalWeight;
+                    if (currentIsDone)
+                    {
+                        float newProgress = currentWeight / loadAsyncTask.TotalWeight;
+                        progress = Mathf.Lerp(progress, newProgress, Time.unscaledDeltaTime * 100);
+                        if (newProgress - progress <= 0.001f)
+                        {
+                            isDone = true;
+                            progress = newProgress;
+                        }
+                    }
+                    else
+                    {
+                        float newProgress = currentWeight / loadAsyncTask.TotalWeight;
+                        float oldProgress = progress;
+                        progress = Mathf.SmoothStep(oldProgress, newProgress, Time.unscaledDeltaTime * 50);
+                    }
                 }
             }
         }
 
         private static ScenesManager instance = null;
+        private static ScenesDataStorage scenesDataStorage = null;
 
         public static ScenesManager Instance
         {
@@ -179,6 +232,7 @@ namespace Fusion.Frameworks.Scenes
                 {
                     GameObject scenesManagerObject = new GameObject("ScenesManager");
                     instance = scenesManagerObject.AddComponent<ScenesManager>();
+                    scenesDataStorage = scenesManagerObject.AddComponent<ScenesDataStorage>();
                     DontDestroyOnLoad(scenesManagerObject);
                 }
                 return instance;
@@ -188,6 +242,8 @@ namespace Fusion.Frameworks.Scenes
         private Dictionary<string, bool> asyncHandler = new Dictionary<string, bool>();
 
         private Queue<LoadAsyncTask> loadAsyncTasks = new Queue<LoadAsyncTask>();
+        private Dictionary<string, bool> loadAsyncTaskSingleKey = new Dictionary<string, bool>();
+
 
         public void Load(string path, LoadSceneMode mode = LoadSceneMode.Single)
         {
@@ -200,7 +256,6 @@ namespace Fusion.Frameworks.Scenes
         {
             if (asyncHandler.ContainsKey(path))
             {
-                Debug.LogError(asyncHandler[path]);
                 return;
             }
             if (mode == LoadSceneMode.Single)
@@ -245,8 +300,16 @@ namespace Fusion.Frameworks.Scenes
         {
             if (loadAsyncTask.CheckValid())
             {
-                loadAsyncTasks.Enqueue(loadAsyncTask);
-                return loadAsyncTask.LoadAsyncOperation;
+                LoadAsyncTask.SceneData singleData = loadAsyncTask.SingleData;
+                if (singleData == null || !loadAsyncTaskSingleKey.ContainsKey(singleData.Name))
+                {
+                    loadAsyncTaskSingleKey[singleData.Name] = true;
+                    loadAsyncTasks.Enqueue(loadAsyncTask);
+                    return loadAsyncTask.LoadAsyncOperation;
+                } else
+                {
+                    return null;
+                }
             } else
             {
                 return null;
@@ -269,6 +332,17 @@ namespace Fusion.Frameworks.Scenes
                 if (loadAsyncTask.LoadAsyncOperation.IsDone)
                 {
                     loadAsyncTasks.Dequeue();
+                    UIManager.Instance.Clear();
+                    LoadAsyncTask.SceneData singleData = loadAsyncTask.SingleData;
+                    if (singleData != null)
+                    {
+                        loadAsyncTaskSingleKey.Remove(singleData.Name);
+                    }
+                    scenesDataStorage.Load();
+                    if (loadAsyncTask.finishCallback != null)
+                    {
+                        loadAsyncTask.finishCallback();
+                    }
                 }
             }
         }
