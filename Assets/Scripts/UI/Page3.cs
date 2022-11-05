@@ -28,10 +28,12 @@ namespace Prefabs.UI
                 //    gameObject.transform.position = new Vector3(-5, 0, 0);
                 //});
 
-                ScenesManager.LoadAsyncTask loadAsyncTask = new ScenesManager.LoadAsyncTask("Scenes/Scene2");
-                loadAsyncTask.AddAdditive("Scenes/Scene2");
-                loadAsyncTask.AddAdditive("Scenes/Scene2");
-                loadAsyncTask.AddAdditive("Scenes/Scene2");
+                ScenesManager.LoadAsyncTask loadAsyncTask = new ScenesManager.LoadAsyncTask("Scenes/Scene1");
+                loadAsyncTask.AddSceneDataHandler(new SceneUIHandler());
+                loadAsyncTask.finishCallback = delegate
+                {
+                    UIManager.Instance.Launch("Prefabs/UI/Page3", new UIData { LaunchMode = UILaunchMode.Standard });
+                };
                 ScenesManager.LoadAsyncOperation loadAsyncOperation = ScenesManager.Instance.Schedule(loadAsyncTask);
             });
 
@@ -40,10 +42,22 @@ namespace Prefabs.UI
             UIUtility.RegisterButtonAction(setBtn2, delegate ()
             {
                 //AssetsUtility.SetSpriteAsync(image2, "Sprites/big1");
-                AssetsUtility.CreateGameObjectAsync("Prefabs/Role/Spider/Spider", null, false, delegate (GameObject gameObject)
-                {
-                    gameObject.transform.position = new Vector3(5, 0, 0);
-                });
+                //ScenesManager.LoadAsyncTask loadAsyncTask = new ScenesManager.LoadAsyncTask("Scenes/Scene2");
+                ////loadAsyncTask.AddAdditive("Scenes/Scene2");
+                ////loadAsyncTask.AddAdditive("Scenes/Scene2");
+                ////loadAsyncTask.AddAdditive("Scenes/Scene2");
+                ////loadAsyncTask.AddSceneDataHandler(new SceneUIHandler());
+                //loadAsyncTask.finishCallback = delegate
+                //{
+                //    UIManager.Instance.Launch("Prefabs/UI/Page3", new UIData { LaunchMode = UILaunchMode.Standard });
+                //};
+                //ScenesManager.LoadAsyncOperation loadAsyncOperation = ScenesManager.Instance.Schedule(loadAsyncTask);
+            });
+
+            GameObject backBtn = UIUtility.Find(gameObject, "Button");
+            UIUtility.RegisterButtonAction(backBtn, delegate ()
+            {
+                Finish();
             });
         }
     }

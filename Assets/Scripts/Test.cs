@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class Test : MonoBehaviour
 {
-    ScenesManager.LoadAsyncOperation loadAsyncOperation = null;
+    //ScenesManager.LoadAsyncOperation loadAsyncOperation = null;
 
     // Start is called before the first frame update
     void Start()
@@ -34,18 +34,24 @@ public class Test : MonoBehaviour
         //    GameObject cubeInstance = Instantiate(gameObject);
         //    cubeInstance.transform.position = Vector3.zero;
         //});
-        UIManager.Instance.Launch("Prefabs/UI/Page3", new UIData { LaunchMode = UILaunchMode.SingleTop });
-        ScenesManager.LoadAsyncTask loadAsyncTask = new ScenesManager.LoadAsyncTask();
-        loadAsyncTask.AddAdditive("Scenes/Scene2");
-        loadAsyncTask.AddAdditive("Scenes/Scene2");
-        loadAsyncTask.AddAdditive("Scenes/Scene2");
-        loadAsyncOperation = ScenesManager.Instance.Schedule(loadAsyncTask);
+        //UIManager.Instance.Launch("Prefabs/UI/Page3", new UIData { LaunchMode = UILaunchMode.SingleTop });
+        ScenesManager.LoadAsyncTask loadAsyncTask = new ScenesManager.LoadAsyncTask("Scenes/Scene1");
+        loadAsyncTask.finishCallback = delegate
+        {
+            UIManager.Instance.Launch("Prefabs/UI/Page3", new UIData { LaunchMode = UILaunchMode.Standard });
+        };
+        ScenesManager.LoadAsyncOperation loadAsyncOperation = ScenesManager.Instance.Schedule(loadAsyncTask);
+        //ScenesManager.LoadAsyncTask loadAsyncTask = new ScenesManager.LoadAsyncTask();
+        //loadAsyncTask.AddAdditive("Scenes/Scene2");
+        //loadAsyncTask.AddAdditive("Scenes/Scene2");
+        //loadAsyncTask.AddAdditive("Scenes/Scene2");
+        //loadAsyncOperation = ScenesManager.Instance.Schedule(loadAsyncTask);
     }
 
     // Update is called once per frame
     void Update()
     {
-        UnityEngine.Debug.LogError(loadAsyncOperation.Progress);
+        //UnityEngine.Debug.LogError(loadAsyncOperation.Progress);
     }
 
     private void OnDisable()

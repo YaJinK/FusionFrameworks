@@ -1,5 +1,5 @@
 ManifestFileVersion: 0
-CRC: 3790223120
+CRC: 1869880600
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
@@ -66,3 +66,6 @@ AssetBundleManifest:
       Dependencies:
         Dependency_0: sprites/equips/atlas@4
         Dependency_1: shaders/s
+    Info_19:
+      Name: scenes/scene1
+      Dependencies: {}
