@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 3514014653
+CRC: 137404621
 Hashes:
   AssetFileHash:
     serializedVersion: 2
     Hash: 7b0239e34f15b5d016f8c9e1e720711a
   TypeTreeHash:
     serializedVersion: 2
-    Hash: e0c7439a53cf24b071be5308736cc7b5
+    Hash: 592134ec8ffd9d2cc72dea2632e229e8
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -20,6 +20,10 @@ ClassTypes:
 - Class: 104
   Script: {instanceID: 0}
 - Class: 114
+  Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 39212b04125cb4e438817df1e7d8be65, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
@@ -27,10 +31,6 @@ ClassTypes:
   Script: {fileID: 11500000, guid: 307e809ead9cc9c42b5932c05bd2c4ba, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
-- Class: 114
-  Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
-- Class: 114
-  Script: {fileID: 11500000, guid: 39212b04125cb4e438817df1e7d8be65, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 157
@@ -43,5 +43,5 @@ ClassTypes:
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
-- Assets/GameAssets/Scenes/Init.unity
+- Assets/InitScene/Init.unity
 Dependencies: []

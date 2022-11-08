@@ -52,6 +52,10 @@ namespace Prefabs.UI
                 //    UIManager.Instance.Launch("Prefabs/UI/Page3", new UIData { LaunchMode = UILaunchMode.Standard });
                 //};
                 //ScenesManager.LoadAsyncOperation loadAsyncOperation = ScenesManager.Instance.Schedule(loadAsyncTask);
+                AssetsUtility.CreateGameObjectAsync("Prefabs/Role/Spider/Spider", null, false, delegate (GameObject gameObject)
+                {
+                    gameObject.transform.position = new Vector3(-5, 0, 0);
+                });
             });
 
             GameObject backBtn = UIUtility.Find(gameObject, "Button");
