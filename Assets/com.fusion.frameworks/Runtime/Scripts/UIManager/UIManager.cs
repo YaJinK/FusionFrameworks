@@ -249,7 +249,7 @@ namespace Fusion.Frameworks.UI
             for (int index = 0; index < objectList.Count; index++)
             {
                 UIObject uiObject = objectList[index];
-                AssetsUtility.Release(uiObject.GameObject);
+                AssetsUtility.ReleaseImmediate(uiObject.GameObject);
                 uiObject.GameObject = null;
             }
             objectList.Clear();

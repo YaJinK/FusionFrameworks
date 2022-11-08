@@ -154,6 +154,20 @@ namespace Fusion.Frameworks.Assets
             }
             UnityEngine.Object.Destroy(gameObject);
         }
+
+        /// <summary>
+        /// 立刻销毁GameObject
+        /// </summary>
+        /// <param name="gameObject"></param>
+        public static void ReleaseImmediate(GameObject gameObject)
+        {
+            GameObjectAssetRecorder[] assetRecorders = gameObject.GetComponentsInChildren<GameObjectAssetRecorder>(true);
+            for (int index = 0; index < assetRecorders.Length; index++)
+            {
+                assetRecorders[index].ReleaseImmediate();
+            }
+            UnityEngine.Object.Destroy(gameObject);
+        }
     }
 }
 

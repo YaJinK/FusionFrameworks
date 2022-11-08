@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Fusion.Frameworks.Assets
@@ -94,6 +95,12 @@ namespace Fusion.Frameworks.Assets
             Release(name, count);
         }
 
+        public void ReleaseImmediate(AssetBundle assetBundle, int count = 1)
+        {
+            string name = assetBundle.name;
+            ReleaseImmediate(name, count);
+        }
+
         private void ReleaseAssetData(string name)
         {
             AssetData assetData = assetReferences[name];
@@ -109,13 +116,27 @@ namespace Fusion.Frameworks.Assets
         public void Release(string name, int count = 1)
         {
             name = name.ToLower();
-            AssetData assetData = assetReferences[name];
-            if (assetData != null)
+            if (assetReferences.ContainsKey(name))
             {
+                AssetData assetData = assetReferences[name];
                 assetData.Release(count);
                 if (assetReferences[name].ReferenceCount == 0)
                 {
                     assetData.ReleaseCoroutine = StartCoroutine(ReleaseAssetDataCountdown(name));
+                }
+            }
+        }
+
+        public void ReleaseImmediate(string name, int count = 1)
+        {
+            name = name.ToLower();
+            if (assetReferences.ContainsKey(name))
+            {
+                AssetData assetData = assetReferences[name];
+                assetData.Release(count);
+                if (assetReferences[name].ReferenceCount == 0)
+                {
+                    ReleaseAssetData(name);
                 }
             }
         }
@@ -133,6 +154,23 @@ namespace Fusion.Frameworks.Assets
             {
                 return null;
             }
+        }
+
+        public void Clear(string[] ignoreList = null)
+        {
+            List<AssetData> list = assetReferences.Values.ToList();
+            foreach (AssetData data in list)
+            {
+                if (!ignoreList.Contains(data.AssetBundle.name))
+                {
+                    ReleaseImmediate(data.AssetBundle, data.ReferenceCount);
+                } else
+                {
+                    data.Release(data.ReferenceCount);
+                }
+            }
+            Debug.Log(assetReferences.Count);
+            
         }
     }
 }

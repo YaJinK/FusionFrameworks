@@ -244,9 +244,13 @@ namespace Fusion.Frameworks.Scenes
         private Queue<LoadAsyncTask> loadAsyncTasks = new Queue<LoadAsyncTask>();
         private Dictionary<string, bool> loadAsyncTaskSingleKey = new Dictionary<string, bool>();
 
-
         public void Load(string path, LoadSceneMode mode = LoadSceneMode.Single)
         {
+            if (mode == LoadSceneMode.Single)
+            {
+                UIManager.Instance.Clear();
+                AssetReferences.Instance.Clear(new string[] { path.ToLower() });
+            }
             string name = AssetsManager.Instance.GetAssetNameByPath(path);
             AssetBundle assetBundle = AssetsManager.Instance.LoadAssetBundle(path);
             SceneManager.LoadScene(name, mode);
@@ -258,8 +262,16 @@ namespace Fusion.Frameworks.Scenes
             {
                 return;
             }
+            
+            StartCoroutine(LoadAsyncCoroutine(path, mode, startCallback, finishCallback));
+        }
+
+        private IEnumerator LoadAsyncCoroutine(string path, LoadSceneMode mode = LoadSceneMode.Single, Action<AsyncOperation> startCallback = null, Action finishCallback = null)
+        {
             if (mode == LoadSceneMode.Single)
             {
+                UIManager.Instance.Clear();
+                AssetReferences.Instance.Clear(new string[] { path.ToLower() });
                 asyncHandler[path] = true;
                 Action originFinishCallback = finishCallback;
                 finishCallback = delegate
@@ -271,11 +283,6 @@ namespace Fusion.Frameworks.Scenes
                     }
                 };
             }
-            StartCoroutine(LoadAsyncCoroutine(path, mode, startCallback, finishCallback));
-        }
-
-        private IEnumerator LoadAsyncCoroutine(string path, LoadSceneMode mode = LoadSceneMode.Single, Action<AsyncOperation> startCallback = null, Action finishCallback = null)
-        {
             string name = AssetsManager.Instance.GetAssetNameByPath(path);
             yield return AssetsManager.Instance.LoadAssetBundleAsync(path);
             AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(name, mode);
@@ -332,7 +339,6 @@ namespace Fusion.Frameworks.Scenes
                 if (loadAsyncTask.LoadAsyncOperation.IsDone)
                 {
                     loadAsyncTasks.Dequeue();
-                    UIManager.Instance.Clear();
                     LoadAsyncTask.SceneData singleData = loadAsyncTask.SingleData;
                     if (singleData != null)
                     {

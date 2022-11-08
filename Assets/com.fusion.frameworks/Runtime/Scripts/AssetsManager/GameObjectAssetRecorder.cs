@@ -64,6 +64,18 @@ namespace Fusion.Frameworks.Assets
                 AssetRecord assetRecord = enumerator.Current.Value;
                 AssetReferences.Instance.Release(assetRecord.Name, assetRecord.Count);
             }
+            assetRecords.Clear();
+        }
+
+        public void ReleaseImmediate()
+        {
+            Dictionary<string, AssetRecord>.Enumerator enumerator = assetRecords.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                AssetRecord assetRecord = enumerator.Current.Value;
+                AssetReferences.Instance.ReleaseImmediate(assetRecord.Name, assetRecord.Count);
+            }
+            assetRecords.Clear();
         }
     }
 }
