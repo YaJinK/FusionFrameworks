@@ -169,8 +169,6 @@ namespace Fusion.Frameworks.Assets
                     data.Release(data.ReferenceCount);
                 }
             }
-            Debug.Log(assetReferences.Count);
-            
         }
     }
 }

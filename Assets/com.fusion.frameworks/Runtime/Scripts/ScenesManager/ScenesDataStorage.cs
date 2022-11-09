@@ -11,8 +11,7 @@ namespace Fusion.Frameworks.Scenes
         private Dictionary<string, List<SceneDataHandler>> scenesDataHandlers = new Dictionary<string, List<SceneDataHandler>>();
         public void Save(List<SceneDataHandler> sceneDataHandlers)
         {
-            Scene currentScene = SceneManager.GetActiveScene();
-            string sceneName = currentScene.name;
+            string sceneName = ScenesManager.Instance.GetCurrentSceneName();
             Save(sceneName, sceneDataHandlers);
         }
 
@@ -27,8 +26,7 @@ namespace Fusion.Frameworks.Scenes
 
         public void Load()
         {
-            Scene currentScene = SceneManager.GetActiveScene();
-            string sceneName = currentScene.name;
+            string sceneName = ScenesManager.Instance.GetCurrentSceneName();
             Load(sceneName);
         }
 

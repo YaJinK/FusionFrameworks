@@ -34,6 +34,7 @@ namespace Prefabs.UI
                 {
                     UIManager.Instance.Launch("Prefabs/UI/Page3", new UIData { LaunchMode = UILaunchMode.Standard });
                 };
+                loadAsyncTask.TransformData = new TransformData { info = "aaa" };
                 ScenesManager.LoadAsyncOperation loadAsyncOperation = ScenesManager.Instance.Schedule(loadAsyncTask);
             });
 

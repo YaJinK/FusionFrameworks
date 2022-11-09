@@ -8,6 +8,12 @@ using UnityEngine.SceneManagement;
 
 namespace Fusion.Frameworks.Scenes
 {
+    public class TransformData
+    {
+        public string fromScene = null;
+        public string info = null;
+    }
+
     /// <summary>
     /// 场景加载类
     /// </summary>
@@ -27,7 +33,7 @@ namespace Fusion.Frameworks.Scenes
             public Action finishCallback = null;
 
             private List<SceneDataHandler> sceneDataHandlers = null;
-
+            private TransformData transformData = null;
             public class SceneData {
                 private string name;
                 public SceneData(string name)
@@ -53,6 +59,7 @@ namespace Fusion.Frameworks.Scenes
             public SceneData SingleData { get => singleData; }
             public List<SceneData> AdditiveList { get => additiveList; }
             public List<SceneDataHandler> SceneDataHandlers { get => sceneDataHandlers; }
+            public TransformData TransformData { get => transformData; set => transformData = value; }
 
             public LoadAsyncTask() : this(null)
             {
@@ -119,6 +126,13 @@ namespace Fusion.Frameworks.Scenes
                 if (sceneDataHandlers != null)
                 {
                     scenesDataStorage.Save(sceneDataHandlers);
+                }
+
+                if (transformData != null)
+                {
+                    
+                    transformData.fromScene = Instance.GetCurrentSceneName();
+                    Instance.transformDatas[singleData.Name] = transformData;
                 }
 
                 isScheduling = true;
@@ -244,6 +258,21 @@ namespace Fusion.Frameworks.Scenes
         private Queue<LoadAsyncTask> loadAsyncTasks = new Queue<LoadAsyncTask>();
         private Dictionary<string, bool> loadAsyncTaskSingleKey = new Dictionary<string, bool>();
 
+        private Dictionary<string, TransformData> transformDatas = new Dictionary<string, TransformData>(); 
+
+        public TransformData GetTransformData(string name)
+        {
+            if (transformDatas.ContainsKey(name))
+            {
+                TransformData transformData = transformDatas[name];
+                transformDatas.Remove(name);
+                return transformData;
+            } else
+            {
+                return null;
+            }
+        }
+
         public void Load(string path, LoadSceneMode mode = LoadSceneMode.Single)
         {
             if (mode == LoadSceneMode.Single)
@@ -295,6 +324,14 @@ namespace Fusion.Frameworks.Scenes
             {
                 finishCallback();
             }
+        }
+
+        public string GetCurrentSceneName()
+        {
+            Scene currentScene = SceneManager.GetActiveScene();
+            string fullName = currentScene.path;
+            string tempString = fullName.Substring(fullName.IndexOf("GameAssets/") + 11);
+            return tempString.Substring(0, tempString.LastIndexOf("."));
         }
 
         public LoadAsyncOperation Schedule(string singleName)
