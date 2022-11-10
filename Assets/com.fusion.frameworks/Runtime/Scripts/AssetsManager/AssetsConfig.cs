@@ -10,7 +10,7 @@ namespace Fusion.Frameworks.Assets
     /// </summary>
     public static class AssetsConfig
     {
-        public static readonly string assetBundleSuffix = "";
+        public static readonly string assetBundleSuffix = ".bundle";
 
         private static Dictionary<string, string> spritePathAtlasNameMap = null;
 
@@ -24,7 +24,7 @@ namespace Fusion.Frameworks.Assets
             if (spritePathAtlasNameMap != null && spritePathAtlasNameMap.ContainsKey(path))
                 return spritePathAtlasNameMap[path];
             else
-                return path + assetBundleSuffix;
+                return (path + assetBundleSuffix).ToLower();
         }
 
         public static void LoadAssetBundlesNameMap(string path)

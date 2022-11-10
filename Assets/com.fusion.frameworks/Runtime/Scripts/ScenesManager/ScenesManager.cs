@@ -278,7 +278,7 @@ namespace Fusion.Frameworks.Scenes
             if (mode == LoadSceneMode.Single)
             {
                 UIManager.Instance.Clear();
-                AssetReferences.Instance.Clear(new string[] { path.ToLower() });
+                AssetReferences.Instance.Clear(new string[] { AssetsConfig.GetAssetBundleName(path) });
             }
             string name = AssetsManager.Instance.GetAssetNameByPath(path);
             AssetBundle assetBundle = AssetsManager.Instance.LoadAssetBundle(path);
@@ -300,7 +300,7 @@ namespace Fusion.Frameworks.Scenes
             if (mode == LoadSceneMode.Single)
             {
                 UIManager.Instance.Clear();
-                AssetReferences.Instance.Clear(new string[] { path.ToLower() });
+                AssetReferences.Instance.Clear(new string[] { AssetsConfig.GetAssetBundleName(path) });
                 asyncHandler[path] = true;
                 Action originFinishCallback = finishCallback;
                 finishCallback = delegate
