@@ -269,6 +269,7 @@ namespace Fusion.Frameworks.Assets.Editor
                             string abName = releativePath.Substring(filePathPrefix.Length + 1) + "/" + atlasName + assetBundleSuffix;
                             assetBundlesNameMap[releativePath.Substring(filePathPrefix.Length + 1) + "/" + fileInfo.Name.Substring(0, fileInfo.Name.LastIndexOf("."))] = abName.ToLower();
                             assetImporter.assetBundleName = abName;
+                            AssetDatabase.SaveAssets();
 
                             EditorUtility.DisplayProgressBar(string.Format("Packing: {0}", releativePath), string.Format("Atlas: Progress: {0}/{1}  PackUnit: {2}", index, fileList.Length, atlasProperty.packUnit), (float)index / (float)fileList.Length);
                         }
