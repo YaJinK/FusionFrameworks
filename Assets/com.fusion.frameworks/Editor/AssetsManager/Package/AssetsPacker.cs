@@ -19,6 +19,18 @@ namespace Fusion.Frameworks.Assets.Editor
 
         private static Dictionary<string, string> assetBundlesNameMap = new Dictionary<string, string>();
 
+        private static BuildSetting buildSetting = null;
+
+        static AssetsPacker() {
+            buildSetting = AssetDatabase.LoadAssetAtPath<BuildSetting>(string.Format("{0}/{1}.asset", filePathPrefix, typeof(BuildSetting).Name));
+            if (buildSetting == null)
+            {
+                buildSetting = ScriptableObject.CreateInstance<BuildSetting>();
+                AssetDatabase.CreateAsset(buildSetting, $"{filePathPrefix}/BuildSetting.asset");
+                AssetDatabase.Refresh();
+            }
+        }
+
         [MenuItem("AssetsManager/CreateGameAssetsFolder")]
         public static void CreateGameAssetsFolder()
         {
@@ -30,13 +42,17 @@ namespace Fusion.Frameworks.Assets.Editor
                     AssetDatabase.CreateFolder("Assets", filePathPrefix.Substring(divideIndex + 1));
                 }
             }
-            
+
             AssetDatabase.Refresh();
         }
 
         [MenuItem("AssetsManager/Pack")]
         public static void Pack()
         {
+            if (!AssetDatabase.IsValidFolder("Assets/StreamingAssets"))
+            {
+                AssetDatabase.CreateFolder("Assets", "StreamingAssets");
+            }
             assetBundlesNameMap.Clear();
             CreateGameAssetsFolder();
             PackFolder(Application.dataPath.Substring(0, Application.dataPath.LastIndexOf("/") + 1) + filePathPrefix);
@@ -63,14 +79,25 @@ namespace Fusion.Frameworks.Assets.Editor
             AssetDatabase.Refresh();
         }
 
-        private static void PackAssetBundle(BuildTarget buildTarget)
+        [MenuItem("AssetsManager/Build")]
+        private static void Build()
+        {
+            ClearStreamingAssets();
+            Pack();
+            PackAssetBundle();
+        }
+
+        private static void PackAssetBundle()
         {
             if (!AssetDatabase.IsValidFolder("Assets/StreamingAssets"))
             {
                 AssetDatabase.CreateFolder("Assets", "StreamingAssets");
             }
 
-            BuildPipeline.BuildAssetBundles(Application.streamingAssetsPath, BuildAssetBundleOptions.None, buildTarget);
+            BuildAssetBundleOptions compressType = (BuildAssetBundleOptions)buildSetting.compressType;
+            BuildAssetBundleOptions optionsAll = compressType;
+
+            BuildPipeline.BuildAssetBundles(Application.streamingAssetsPath, optionsAll, GetCurrentBuildTarget());
 
             AssetDatabase.Refresh();
             AssetDatabase.RenameAsset("Assets/StreamingAssets/StreamingAssets", "AssetBundleManifest");
@@ -78,20 +105,10 @@ namespace Fusion.Frameworks.Assets.Editor
             AssetDatabase.Refresh();
         }
 
-        [MenuItem("AssetsManager/Build Assets (Android)")]
-        private static void BuildAssetsAndroid()
+        private static BuildTarget GetCurrentBuildTarget()
         {
-            ClearStreamingAssets();
-            Pack();
-            PackAssetBundle(BuildTarget.Android);
-        }
-
-        [MenuItem("AssetsManager/Build Assets (PC x86)")]
-        private static void BuildAssetsPC()
-        {
-            ClearStreamingAssets();
-            Pack();
-            PackAssetBundle(BuildTarget.StandaloneWindows);
+            BuildTarget buildTarget = buildSetting.buildTargetType == BuildTargetType.UseCurrentTarget ? EditorUserBuildSettings.activeBuildTarget : (BuildTarget)buildSetting.buildTargetType;
+            return buildTarget;
         }
 
         private static void SetAssetBundleName(AssetImporter assetImporter, BuildProperty buildProperty, FileInfo fileInfo)
@@ -107,19 +124,76 @@ namespace Fusion.Frameworks.Assets.Editor
             }
         }
 
-        private static void PackFolder(string path)
+        private static void BuildFolderAssetBundle(string path, BuildProperty buildProperty)
         {
             path = path.Replace("\\", "/");
 
-            AssetDatabase.Refresh();
             string[] fileList = Directory.GetFiles(path);
             string releativePath = path.Substring(path.IndexOf(filePathPrefix));
 
-            BuildProperty buildProperty = GetProperty<BuildProperty>(releativePath);
-            if (buildProperty == null)
-                buildProperty = ScriptableObject.CreateInstance<BuildProperty>();
+            List<AssetBundleBuild> assetBundleBuilds = new List<AssetBundleBuild>();
+            string assetBundlePath = releativePath.Substring(filePathPrefix.Length + 1);
+            if (AssetDatabase.IsValidFolder("Assets/StreamingAssets/" + assetBundlePath))
+            {
+                AssetDatabase.DeleteAsset("Assets/StreamingAssets/" + assetBundlePath);
+            }
+            if (buildProperty.type == BuildType.Folder)
+            {
+                AssetBundleBuild assetBundleBuild = new AssetBundleBuild();
+                string assetBundleName = $"{assetBundlePath}{assetBundleSuffix}";
+                assetBundleBuild.assetBundleName = assetBundleName;
+                List<string> assetNames = new List<string>();
+                for (int index = 0; index < fileList.Length; index++)
+                {
+                    FileInfo fileInfo = new FileInfo(fileList[index]);
+                    if (CheckFileValid(fileInfo))
+                    {
+                        string fileFullName = releativePath + "/" + fileInfo.Name;
+                        AssetImporter assetImporter = AssetImporter.GetAtPath(fileFullName);
+                        assetImporter.assetBundleName = null;
+                        string assetName = $"{releativePath}/{fileInfo.Name}";
+                        assetNames.Add(assetName);
+                        assetBundlesNameMap[$"{assetBundlePath}/{fileInfo.Name.Substring(0, fileInfo.Name.LastIndexOf("."))}"] = assetBundleName.ToLower();
+                        EditorUtility.DisplayProgressBar(string.Format("Packing: {0}", releativePath), string.Format("Atlas: Progress: {0}/{1}", index, fileList.Length), (float)index / (float)fileList.Length);
+                    }
+                }
+                assetBundleBuild.assetNames = assetNames.ToArray();
+                assetBundleBuilds.Add(assetBundleBuild);
 
-            AtlasProperty atlasProperty = GetProperty<AtlasProperty>(releativePath);
+            }
+            else if (buildProperty.type == BuildType.File)
+            {
+                for (int index = 0; index < fileList.Length; index++)
+                {
+                    FileInfo fileInfo = new FileInfo(fileList[index]);
+                    if (CheckFileValid(fileInfo))
+                    {
+                        string fileFullName = releativePath + "/" + fileInfo.Name;
+                        AssetImporter assetImporter = AssetImporter.GetAtPath(fileFullName);
+                        assetImporter.assetBundleName = null;
+                        AssetBundleBuild assetBundleBuild = new AssetBundleBuild();
+                        string assetBundleName = $"{assetBundlePath}/{fileInfo.Name.Substring(0, fileInfo.Name.LastIndexOf("."))}";
+                        assetBundleBuild.assetBundleName = assetBundleName;
+                        string assetName = $"{releativePath}/{fileInfo.Name}";
+                        assetBundleBuild.assetNames = new string[] { assetName };
+                        EditorUtility.DisplayProgressBar(string.Format("Packing: {0}", releativePath), string.Format("Atlas: Progress: {0}/{1}", index, fileList.Length), (float)index / (float)fileList.Length);
+                        assetBundleBuilds.Add(assetBundleBuild);
+                    }
+                }
+            }
+
+            BuildAssetBundleOptions compressType = (BuildAssetBundleOptions)buildProperty.compressType;
+            BuildAssetBundleOptions optionsAll = compressType;
+
+            BuildPipeline.BuildAssetBundles(Application.streamingAssetsPath, assetBundleBuilds.ToArray(), optionsAll, GetCurrentBuildTarget());
+
+            AssetDatabase.Refresh();
+        }
+
+        private static void SetFolderAssetBundleName(string path, BuildProperty buildProperty, AtlasProperty atlasProperty)
+        {
+            string[] fileList = Directory.GetFiles(path);
+            string releativePath = path.Substring(path.IndexOf(filePathPrefix));
 
             if (atlasProperty != null && atlasProperty.packUnit != 0)
             {
@@ -133,7 +207,6 @@ namespace Fusion.Frameworks.Assets.Editor
                         AssetDatabase.DeleteAsset(fileFullName);
                     }
                 }
-                AssetDatabase.SaveAssets();
 
                 Vector2 ignoreSpriteSize = atlasProperty.ignoreSize;
                 int spriteNoOfAtlas = 0;
@@ -196,14 +269,12 @@ namespace Fusion.Frameworks.Assets.Editor
                             string abName = releativePath.Substring(filePathPrefix.Length + 1) + "/" + atlasName + assetBundleSuffix;
                             assetBundlesNameMap[releativePath.Substring(filePathPrefix.Length + 1) + "/" + fileInfo.Name.Substring(0, fileInfo.Name.LastIndexOf("."))] = abName.ToLower();
                             assetImporter.assetBundleName = abName;
-                            AssetDatabase.SaveAssets();
 
                             EditorUtility.DisplayProgressBar(string.Format("Packing: {0}", releativePath), string.Format("Atlas: Progress: {0}/{1}  PackUnit: {2}", index, fileList.Length, atlasProperty.packUnit), (float)index / (float)fileList.Length);
                         }
                         else
                         {
                             SetAssetBundleName(assetImporter, buildProperty, fileInfo);
-                     
                             EditorUtility.DisplayProgressBar(string.Format("Packing: {0}", releativePath), string.Format("Atlas: Progress: {0}/{1}", index, fileList.Length), (float)index / (float)fileList.Length);
                         }
                     }
@@ -223,8 +294,27 @@ namespace Fusion.Frameworks.Assets.Editor
                     }
                 }
             }
+        }
 
-            AssetDatabase.SaveAssets();
+        private static void PackFolder(string path)
+        {
+            path = path.Replace("\\", "/");
+            string releativePath = path.Substring(path.IndexOf(filePathPrefix));
+
+            BuildProperty buildProperty = GetProperty<BuildProperty>(releativePath);
+            if (buildProperty == null)
+                buildProperty = ScriptableObject.CreateInstance<BuildProperty>();
+
+            if (buildProperty.compressType == FolderCompressType.UseBuildSetting || (CompressType)buildProperty.compressType == buildSetting.compressType)
+            {
+                AtlasProperty atlasProperty = GetProperty<AtlasProperty>(releativePath);
+                SetFolderAssetBundleName(path, buildProperty, atlasProperty);
+            } else
+            {
+                BuildFolderAssetBundle(path, buildProperty);
+            }
+
+            AssetDatabase.Refresh();
             string[] dirList = Directory.GetDirectories(path);
             for (int index = 0; index < dirList.Length; index++)
             {
