@@ -168,6 +168,26 @@ namespace Fusion.Frameworks.Assets
             }
             UnityEngine.Object.Destroy(gameObject);
         }
+
+        /// <summary>
+        /// 通过资源路径释放AssetBundle引用
+        /// </summary>
+        /// <param name="path">资源路径</param>
+        public static void Release(string path)
+        {
+            string assetBundleName = AssetsConfig.GetAssetBundleName(path);
+            AssetReferences.Instance.Release(assetBundleName);
+        }
+
+        /// <summary>
+        /// 通过资源路径释放AssetBundle引用 若引用为0立刻销毁
+        /// </summary>
+        /// <param name="path">资源路径</param>
+        public static void ReleaseImmediate(string path)
+        {
+            string assetBundleName = AssetsConfig.GetAssetBundleName(path);
+            AssetReferences.Instance.ReleaseImmediate(assetBundleName);
+        }
     }
 }
 
