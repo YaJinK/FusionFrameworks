@@ -1,0 +1,17 @@
+ManifestFileVersion: 0
+CRC: 1983438025
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: f9c0c2e41bf2a51c7684858a5035df9f
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: c33d3594fb840798e3bd468c6c9d34d3
+HashAppended: 0
+ClassTypes:
+- Class: 74
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/GameAssets/Prefabs/Role/Spider/Animation/Take 001.anim
+Dependencies: []

@@ -1,71 +1,107 @@
 ManifestFileVersion: 0
-CRC: 1869880600
+CRC: 239897825
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
-      Name: sprites/equips/atlas@2
-      Dependencies: {}
-    Info_1:
-      Name: prefabs/ui
-      Dependencies: {}
-    Info_2:
-      Name: materials/m1
-      Dependencies:
-        Dependency_0: sprites/equips/e_metal05
-        Dependency_1: shaders/s
-    Info_3:
-      Name: sprites/equips/e_wood01
-      Dependencies: {}
-    Info_4:
-      Name: prefabs/role/spider
-      Dependencies: {}
-    Info_5:
       Name: scenes/init
       Dependencies: {}
+    Info_1:
+      Name: materials/m1.bundle
+      Dependencies:
+        Dependency_0: shaders/s.bundle
+        Dependency_1: sprites/equips/e_metal05.bundle
+    Info_2:
+      Name: materials/m2.bundle
+      Dependencies:
+        Dependency_0: shaders/s.bundle
+        Dependency_1: sprites/equips/atlas@3.bundle
+    Info_3:
+      Name: materials/m3.bundle
+      Dependencies:
+        Dependency_0: shaders/s.bundle
+        Dependency_1: sprites/equips/atlas@4.bundle
+    Info_4:
+      Name: scenes/scene1.bundle
+      Dependencies: {}
+    Info_5:
+      Name: scenes/scene2.bundle
+      Dependencies: {}
     Info_6:
-      Name: sprites/equips/atlas@1
+      Name: shaders/s.bundle
       Dependencies: {}
     Info_7:
-      Name: prefabs/shape
-      Dependencies:
-        Dependency_0: materials/m1
+      Name: sprites/big1.bundle
+      Dependencies: {}
     Info_8:
-      Name: sprites/equips/e_metal04
+      Name: sprites/equips/atlas@0.bundle
       Dependencies: {}
     Info_9:
-      Name: sprites/equips/atlas@4
+      Name: sprites/equips/atlas@1.bundle
       Dependencies: {}
     Info_10:
-      Name: sprites/equips/atlas@0
+      Name: sprites/equips/atlas@2.bundle
       Dependencies: {}
     Info_11:
-      Name: sprites/equips/atlas@3
+      Name: sprites/equips/atlas@3.bundle
       Dependencies: {}
     Info_12:
-      Name: materials/m2
-      Dependencies:
-        Dependency_0: sprites/equips/atlas@3
-        Dependency_1: shaders/s
+      Name: sprites/equips/atlas@4.bundle
+      Dependencies: {}
     Info_13:
-      Name: sprites/equips/e_wood02
+      Name: sprites/equips/e_metal04.bundle
       Dependencies: {}
     Info_14:
-      Name: scenes/scene2
+      Name: sprites/equips/e_metal05.bundle
       Dependencies: {}
     Info_15:
-      Name: sprites/equips/e_metal05
+      Name: sprites/equips/e_wood01.bundle
       Dependencies: {}
     Info_16:
-      Name: sprites/big1
+      Name: sprites/equips/e_wood02.bundle
       Dependencies: {}
     Info_17:
-      Name: shaders/s
-      Dependencies: {}
-    Info_18:
-      Name: materials/m3
+      Name: prefabs/role/spider/animation/spideranimation.bundle
       Dependencies:
-        Dependency_0: sprites/equips/atlas@4
-        Dependency_1: shaders/s
-    Info_19:
-      Name: scenes/scene1
+        Dependency_0: prefabs/role/spider/animation/take 001.bundle
+    Info_18:
+      Name: prefabs/role/spider/animation/take 001.bundle
       Dependencies: {}
+    Info_19:
+      Name: prefabs/role/spider/m/01 - default.bundle
+      Dependencies:
+        Dependency_0: prefabs/role/spider/textures/spider_diff.bundle
+    Info_20:
+      Name: prefabs/role/spider/mesh/hood_spidergwen_geo.bundle
+      Dependencies: {}
+    Info_21:
+      Name: prefabs/role/spider/mesh/spidergwen_body_geo.bundle
+      Dependencies: {}
+    Info_22:
+      Name: prefabs/role/spider/textures/spider_diff.bundle
+      Dependencies: {}
+    Info_23:
+      Name: prefabs/role/spider/textures/spider_spec.bundle
+      Dependencies: {}
+    Info_24:
+      Name: prefabs/shape/cube.bundle
+      Dependencies:
+        Dependency_0: materials/m1.bundle
+    Info_25:
+      Name: prefabs/shape/page.bundle
+      Dependencies: {}
+    Info_26:
+      Name: prefabs/ui/page1.bundle
+      Dependencies: {}
+    Info_27:
+      Name: prefabs/ui/page2.bundle
+      Dependencies: {}
+    Info_28:
+      Name: prefabs/ui/page3.bundle
+      Dependencies: {}
+    Info_29:
+      Name: prefabs/role/spider/spider.bundle
+      Dependencies:
+        Dependency_0: prefabs/role/spider/animation/spideranimation.bundle
+        Dependency_1: prefabs/role/spider/m/01 - default.bundle
+        Dependency_2: prefabs/role/spider/mesh/hood_spidergwen_geo.bundle
+        Dependency_3: prefabs/role/spider/mesh/spidergwen_body_geo.bundle

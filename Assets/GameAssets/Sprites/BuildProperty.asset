@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: BuildProperty
   m_EditorClassIdentifier: 
   type: 0
+  compressType: 10000

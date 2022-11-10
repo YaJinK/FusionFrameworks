@@ -1,0 +1,23 @@
+ManifestFileVersion: 0
+CRC: 116819327
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 0feb238610e8e1e59b41ea2f241032ad
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: d5656af68283edd8be48ea29d7c443ed
+HashAppended: 0
+ClassTypes:
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/GameAssets/Materials/M1.mat
+Dependencies:
+- E:/Work/Project/FusionFrameworks/Assets/StreamingAssets/shaders/s.bundle
+- E:/Work/Project/FusionFrameworks/Assets/StreamingAssets/sprites/equips/e_metal05.bundle
