@@ -29,6 +29,8 @@ namespace Prefabs.UI
                 //});
 
                 ScenesManager.LoadAsyncTask loadAsyncTask = new ScenesManager.LoadAsyncTask("Scenes/Scene1");
+                loadAsyncTask.AddAdditive("Scenes/Scene2");
+                loadAsyncTask.AddAdditive("Scenes/Scene2");
                 loadAsyncTask.AddSceneDataHandler(new SceneUIHandler());
                 loadAsyncTask.finishCallback = delegate
                 {
@@ -57,6 +59,7 @@ namespace Prefabs.UI
                 {
                     gameObject.transform.position = new Vector3(-5, 0, 0);
                 });
+                ScenesManager.Instance.Release("Scenes/Scene2");
             });
 
             GameObject backBtn = UIUtility.Find(gameObject, "Button");

@@ -329,7 +329,11 @@ namespace Fusion.Frameworks.Scenes
         public string GetCurrentSceneName()
         {
             Scene currentScene = SceneManager.GetActiveScene();
-            string fullName = currentScene.path;
+            return GetSceneName(currentScene);
+        }
+        public string GetSceneName(Scene scene)
+        {
+            string fullName = scene.path;
             string tempString = fullName.Substring(fullName.IndexOf("GameAssets/") + 11);
             return tempString.Substring(0, tempString.LastIndexOf("."));
         }
@@ -359,6 +363,23 @@ namespace Fusion.Frameworks.Scenes
                 return null;
             }
 
+        }
+
+        public void Release(string sceneName)
+        {
+            StartCoroutine(ReleaseCoroutine(sceneName));
+        }
+
+        private IEnumerator ReleaseCoroutine(string sceneName)
+        {
+            int divideIndex = sceneName.LastIndexOf("/") + 1;
+            string simpleName = sceneName.Substring(divideIndex);
+            AsyncOperation operation = SceneManager.UnloadSceneAsync(simpleName);
+            yield return operation;
+            if (operation != null)
+            {
+                AssetsUtility.Release(sceneName);
+            }
         }
 
         // Update is called once per frame

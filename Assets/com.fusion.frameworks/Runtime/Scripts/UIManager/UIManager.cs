@@ -132,8 +132,11 @@ namespace Fusion.Frameworks.UI
             uiObject.GameObject.GetOrAddComponent<GraphicRaycaster>();
             canvas.SetOverrideSorting(true);
             canvas.sortingOrder = uiObject.SortingOrder;
+            bool oldActive = uiObject.Active;
+            uiObject.SetActive(true);
             uiObject.Init();
             uiObject.Update();
+            uiObject.SetActive(oldActive);
 
             return uiObject;
         }
@@ -198,8 +201,11 @@ namespace Fusion.Frameworks.UI
                 uiObject.GameObject.GetOrAddComponent<GraphicRaycaster>();
                 canvas.SetOverrideSorting(true);
                 canvas.sortingOrder = uiObject.SortingOrder;
+                bool oldActive = uiObject.Active;
+                uiObject.SetActive(true);
                 uiObject.Init();
                 uiObject.Update();
+                uiObject.SetActive(oldActive);
                 if (finishCallback != null)
                 {
                     finishCallback(uiObject);
@@ -268,8 +274,11 @@ namespace Fusion.Frameworks.UI
                     uiObject.GameObject = gameObject;
                 }
                 objectList.Add(uiObject);
+                bool oldActive = uiObject.Active;
+                uiObject.SetActive(true);
                 uiObject.Init();
                 uiObject.Update();
+                uiObject.SetActive(oldActive);
             }
         }
 
@@ -404,8 +413,8 @@ namespace Fusion.Frameworks.UI
 
             UIObject uiObject = objectList[index];
             uiObject.Data = data;
-            uiObject.Update();
             uiObject.SetActive(true);
+            uiObject.Update();
             return uiObject;
         }
     }

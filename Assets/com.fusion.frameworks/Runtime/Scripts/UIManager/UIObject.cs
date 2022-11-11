@@ -66,6 +66,7 @@ namespace Fusion.Frameworks.UI
 
         public UIType Type { get => type; }
         public int SortingOrder { get => sortingOrder; }
+        public bool Active { get => active; }
 
         public UIObject(UIData data)
         {
