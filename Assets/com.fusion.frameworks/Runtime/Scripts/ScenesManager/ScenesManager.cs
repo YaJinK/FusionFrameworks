@@ -145,7 +145,6 @@ namespace Fusion.Frameworks.Scenes
                     Instance.LoadAsync(singleData.Name, LoadSceneMode.Single, delegate (AsyncOperation asyncOperation)
                     {
                         singleData.asyncOperation = asyncOperation;
-                        singleData.asyncOperation.allowSceneActivation = false;
                     }, singleFinishCallback);
                 } else
                 {
@@ -185,12 +184,7 @@ namespace Fusion.Frameworks.Scenes
                         if (singleSceneData.asyncOperation != null)
                         {
                             float singleProgress = singleSceneData.asyncOperation.progress;
-                            currentWeight = singleProgress * 10 / 9 * singleSceneData.weight;
-                            if (currentWeight >= singleSceneData.weight)
-                            {
-                                currentWeight = singleSceneData.weight;
-                                singleSceneData.asyncOperation.allowSceneActivation = true;
-                            }
+                            currentWeight = singleProgress * singleSceneData.weight;
                             currentIsDone = currentIsDone && singleSceneData.asyncOperation.isDone;
                         }
                         else
