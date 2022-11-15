@@ -16,7 +16,7 @@ namespace Fusion.Frameworks.Assets.Editor
         UseBuildSetting = 10000
     }
 
-    [CreateAssetMenu]
+    [CreateAssetMenu(fileName = "BuildProperty", menuName = "FusionConfig/Build Property")]
     public class BuildProperty : ScriptableObject
     {
         [SerializeField]

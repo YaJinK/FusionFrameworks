@@ -2,7 +2,7 @@
 
 namespace Fusion.Frameworks.Assets.Editor
 {
-    [CreateAssetMenu]
+    [CreateAssetMenu(fileName = "AtlasProperty", menuName = "FusionConfig/Atlas Property")]
     public class AtlasProperty : ScriptableObject
     {
         // 图集粒度  -1 整个文件夹打一个图集  0  不打图集  +n n张sprite打一个图集

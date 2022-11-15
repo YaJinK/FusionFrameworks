@@ -21,6 +21,8 @@ namespace Fusion.Frameworks.Assets.Editor
 
         private static BuildSetting buildSetting = null;
 
+        public static string FilePathPrefix { get => filePathPrefix; }
+
         static AssetsPacker() {
             buildSetting = AssetDatabase.LoadAssetAtPath<BuildSetting>(string.Format("{0}/{1}.asset", filePathPrefix, typeof(BuildSetting).Name));
             if (buildSetting == null)

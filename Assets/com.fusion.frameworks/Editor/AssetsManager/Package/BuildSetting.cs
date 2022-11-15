@@ -21,7 +21,7 @@ namespace Fusion.Frameworks.Assets.Editor
     }
 
 
-    [CreateAssetMenu]
+    [CreateAssetMenu(fileName = "Assets/GameAssets/BuildSetting", menuName = "FusionConfig/Build Setting")]
     public class BuildSetting : ScriptableObject
     {
         [SerializeField]
