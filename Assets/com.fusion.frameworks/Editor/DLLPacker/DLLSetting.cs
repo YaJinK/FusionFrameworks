@@ -6,10 +6,17 @@ namespace Fusion.Frameworks.DynamicDLL.Editor
     public class DLLSetting : ScriptableObject
     {
         [SerializeField]
-        [Tooltip("Only Folder or C# Script")]
+        [Tooltip("Only Folder")]
         public UnityEngine.Object[] scriptsForPack;
 
         [SerializeField]
-        public string[] adpters;
+        [Tooltip(@"[ClassFullName],[AssemblyName]
+Example: UnityEngine.MonoBehaviour,UnityEngine")]
+        public string[] customAdapters;
+
+        [SerializeField]
+        [Tooltip(@"[ClassFullName]
+Example: UnityEngine.GameObject")]
+        public string[] customMethodDelegates;
     }
 }
