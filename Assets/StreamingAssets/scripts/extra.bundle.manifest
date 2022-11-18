@@ -1,17 +1,17 @@
 ManifestFileVersion: 0
-CRC: 1300831796
+CRC: 1652285939
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 04e88983146dcf61115cd627426ea2ec
+    Hash: d2df00c4d9a0657602ef26ebd96d65e5
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 070e64028d0fb02d3485eb0d43485f8b
+    Hash: 5ad585dd02dfb5016c0dad519eab8f49
 HashAppended: 0
 ClassTypes:
-- Class: 48
+- Class: 49
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
-- Assets/GameAssets/Shaders/S.shader
+- Assets/GameAssets/Scripts/Extra.bytes
 Dependencies: []

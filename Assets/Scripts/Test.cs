@@ -1,8 +1,11 @@
+using Fusion.Frameworks.DynamicDLL;
 using Fusion.Frameworks.Scenes;
 using Fusion.Frameworks.UI;
+using Prefabs.UI;
 using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 public class Test : MonoBehaviour
 {
@@ -38,7 +41,9 @@ public class Test : MonoBehaviour
         ScenesManager.LoadAsyncTask loadAsyncTask = new ScenesManager.LoadAsyncTask("Scenes/Scene1");
         loadAsyncTask.finishCallback = delegate
         {
-            UIManager.Instance.Launch("Prefabs/UI/Page3", new UIData { LaunchMode = UILaunchMode.Standard });
+            UIManager.Instance.Launch("Prefabs/UI/Page1", new UIData { LaunchMode = UILaunchMode.Standard });
+            //UIData uiData = DLLManager.Instance.Instantiate<UIData>("Prefabs.UI.Page2Data", new object[] { UILaunchMode.SingleTop, "Sprites/Equips/1" });
+            //UIManager.Instance.Launch("Prefabs/UI/Page2", uiData);
         };
         ScenesManager.LoadAsyncOperation loadAsyncOperation = ScenesManager.Instance.Schedule(loadAsyncTask);
         //ScenesManager.LoadAsyncTask loadAsyncTask = new ScenesManager.LoadAsyncTask();

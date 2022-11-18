@@ -8,6 +8,15 @@ namespace Prefabs.UI
     public class Page2Data : UIData
     {
         public string spriteName;
+
+        public Page2Data()
+        {
+        }
+
+        public Page2Data(UILaunchMode launchMode, string spriteName) : base(launchMode)
+        {
+            this.spriteName = spriteName;
+        }
     }
 
     public class Page2 : UIObject
@@ -36,7 +45,9 @@ namespace Prefabs.UI
             });
 
             GameObject image = UIUtility.Find(gameObject, "Image");
-            Page2Data page2Data = (Page2Data)data;
+            Page2Data page2Data = data as Page2Data;
+            Debug.LogError(page2Data.Name);
+            Debug.LogError(page2Data.spriteName);
             AssetsUtility.SetSprite(image, page2Data.spriteName);
         }
     }
