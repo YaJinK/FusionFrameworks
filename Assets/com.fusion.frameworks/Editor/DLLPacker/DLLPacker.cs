@@ -1,15 +1,14 @@
 using Fusion.Frameworks.Assets.Editor;
+using Fusion.Frameworks.UI;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Unity.VisualScripting.YamlDotNet.Core;
 using UnityEditor;
 using UnityEditor.Compilation;
 using UnityEngine;
 
-namespace Fusion.Frameworks.ILRuntime.Editor
+namespace Fusion.Frameworks.DynamicDLL.Editor
 {
     public class DLLPacker
     {
@@ -27,7 +26,54 @@ namespace Fusion.Frameworks.ILRuntime.Editor
             }
         }
 
-        [MenuItem("ILRuntime/Extensions/Pack")]
+        [MenuItem("DLLManager/GenerateAdaptor/BuildIn")]
+        public static void GenerateBuildInAdaptor()
+        {
+            string buildInAdapterPath = "Assets/com.fusion.frameworks/Runtime/Scripts/DLLManager/Adapters";
+            using (System.IO.StreamWriter sw = new System.IO.StreamWriter($"{buildInAdapterPath}/UIObjectAdapter.cs"))
+            {
+                sw.WriteLine(ILRuntime.Runtime.Enviorment.CrossBindingCodeGenerator.GenerateCrossBindingAdapterCode(typeof(UIObject), "Fusion.Frameworks.DynamicDLL.Adapters"));
+            }
+
+            using (System.IO.StreamWriter sw = new System.IO.StreamWriter($"{buildInAdapterPath}/UIDataAdapter.cs"))
+            {
+                sw.WriteLine(ILRuntime.Runtime.Enviorment.CrossBindingCodeGenerator.GenerateCrossBindingAdapterCode(typeof(UIData), "Fusion.Frameworks.DynamicDLL.Adapters"));
+            }
+
+            AssetDatabase.Refresh();
+        }
+
+        [MenuItem("DLLManager/GenerateAdaptor/Custom")]
+        public static void GenerateCustomAdaptor()
+        {
+            string customAdapterPath = "Assets/Scripts/Generated/Adapters";
+            if (AssetDatabase.IsValidFolder(customAdapterPath))
+            {
+                AssetDatabase.DeleteAsset(customAdapterPath);
+            }
+            Directory.CreateDirectory(customAdapterPath);
+
+            for (int index = 0; index < dllSetting.adpters.Length; index++)
+            {
+                string className = dllSetting.adpters[index];
+                string[] classNameAndAssemblyName = className.Split(",");
+                if (classNameAndAssemblyName.Length == 1)
+                {
+                    className = $"{className},Assembly-CSharp";
+                }
+                Type classType = Type.GetType(className);
+
+                string namePrefix = classNameAndAssemblyName[0].Substring(classNameAndAssemblyName[0].LastIndexOf(".") + 1);
+                using (System.IO.StreamWriter sw = new System.IO.StreamWriter($"{customAdapterPath}/{namePrefix}Adapter.cs"))
+                {
+                    sw.WriteLine(ILRuntime.Runtime.Enviorment.CrossBindingCodeGenerator.GenerateCrossBindingAdapterCode(classType, "Fusion.Frameworks.DynamicDLL.Adapters.Custom"));
+                }
+            }
+
+            AssetDatabase.Refresh();
+        }
+
+        [MenuItem("DLLManager/Pack")]
         public static void Pack()
         {
             if (!AssetDatabase.IsValidFolder("Assets/StreamingAssets"))
@@ -51,10 +97,9 @@ namespace Fusion.Frameworks.ILRuntime.Editor
 
             string output = "FusionTemp/DLL/Extra.dll";
             string productParentFolder = "Assets/GameAssets/Scripts";
-            string productOutput = "Assets/GameAssets/Scripts/Extra.dll";
+            string productOutput = "Assets/GameAssets/Scripts/Extra.bytes";
 
             AssemblyBuilder assemblyBuilder = new AssemblyBuilder(output, scriptPaths.ToArray());
-            Debug.LogError(EditorApplication.applicationContentsPath);
             assemblyBuilder.excludeReferences = new string[] {
                 $"{EditorApplication.applicationContentsPath}/Managed/UnityEngine.dll".Replace("/", "\\")
             };
@@ -73,7 +118,13 @@ namespace Fusion.Frameworks.ILRuntime.Editor
 
                 for (int i = 0; i < compilerMessages.Length; i++)
                 {
-                    Debug.LogError(compilerMessages[i].message);
+                    if (compilerMessages[i].type == CompilerMessageType.Error)
+                    {
+                        Debug.LogError(compilerMessages[i].message);
+                    } else
+                    {
+                        Debug.LogWarning(compilerMessages[i].message);
+                    }
                 }
 
                 if (errorCount == 0)

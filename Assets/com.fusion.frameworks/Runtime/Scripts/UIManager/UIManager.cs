@@ -1,4 +1,5 @@
 using Fusion.Frameworks.Assets;
+using Fusion.Frameworks.DynamicDLL;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -125,8 +126,13 @@ namespace Fusion.Frameworks.UI
             data.Name = path;
             GameObject gameObject = AssetsUtility.CreateGameObject(path, rootObject);
             string className = data.Name.Replace("/", ".");
+
+#if !UNITY_EDITOR
             Type classType = Type.GetType($"{className}, Assembly-CSharp");
             UIObject uiObject = classType != null ? (UIObject)Activator.CreateInstance(classType, data) : new UIObject(data);
+#else
+            UIObject uiObject = DLLManager.Instance.Instantiate<UIObject>(className, data);
+#endif
             uiObject.GameObject = gameObject;
             Canvas canvas = uiObject.GameObject.GetOrAddComponent<Canvas>();
             uiObject.GameObject.GetOrAddComponent<GraphicRaycaster>();
@@ -192,8 +198,12 @@ namespace Fusion.Frameworks.UI
             }
             data.Name = path;
             string className = data.Name.Replace("/", ".");
+#if !UNITY_EDITOR
             Type classType = Type.GetType($"{className}, Assembly-CSharp");
             UIObject uiObject = classType != null ? (UIObject)Activator.CreateInstance(classType, data) : new UIObject(data);
+#else
+            UIObject uiObject = DLLManager.Instance.Instantiate<UIObject>(className, data);
+#endif
             AssetsUtility.CreateGameObjectAsync(path, rootObject, false, delegate(GameObject gameObject)
             {
                 uiObject.GameObject = gameObject;

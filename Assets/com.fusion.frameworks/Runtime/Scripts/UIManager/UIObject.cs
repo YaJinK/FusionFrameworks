@@ -29,6 +29,15 @@ namespace Fusion.Frameworks.UI
     {
         private UILaunchMode launchMode = UILaunchMode.Standard;
 
+        public UIData()
+        {
+        }
+
+        public UIData(UILaunchMode launchMode)
+        {
+            this.launchMode = launchMode;
+        }
+
         public string Name { get; set; }    // UI Prefab的路径
         public UILaunchMode LaunchMode { get => launchMode; set => launchMode = value; }
     }
@@ -67,6 +76,10 @@ namespace Fusion.Frameworks.UI
         public UIType Type { get => type; }
         public int SortingOrder { get => sortingOrder; }
         public bool Active { get => active; }
+
+        public UIObject()
+        {
+        }
 
         public UIObject(UIData data)
         {

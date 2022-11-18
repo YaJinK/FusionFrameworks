@@ -1,7 +1,7 @@
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 namespace Fusion.Frameworks.UI
 {
@@ -19,11 +19,17 @@ namespace Fusion.Frameworks.UI
             return childTransform.gameObject;
         }
 
-        public static void RegisterButtonAction(GameObject gameObject, UnityAction unityAction)
+        public static void RegisterButtonAction(GameObject gameObject, Action callback)
         {
             Button button = gameObject.GetComponent<Button>();
             button.onClick.RemoveAllListeners();
-            button.onClick.AddListener(unityAction);
+            button.onClick.AddListener(delegate
+            {
+                if (callback != null)
+                {
+                    callback();
+                }
+            });
         }
 
         public static void SetText(GameObject gameObject, string str)

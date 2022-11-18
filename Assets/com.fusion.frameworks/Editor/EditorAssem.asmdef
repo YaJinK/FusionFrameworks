@@ -2,7 +2,8 @@
     "name": "Fusion.Frameworks.Editor",
     "rootNamespace": "",
     "references": [
-        "Fusion.Frameworks.Runtime"
+        "Fusion.Frameworks.Runtime",
+        "ILRuntime"
     ],
     "includePlatforms": [
         "Editor"

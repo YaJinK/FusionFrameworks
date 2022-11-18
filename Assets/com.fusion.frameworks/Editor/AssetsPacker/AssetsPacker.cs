@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.U2D;
 using UnityEngine;
@@ -20,6 +21,14 @@ namespace Fusion.Frameworks.Assets.Editor
         private static Dictionary<string, string> assetBundlesNameMap = new Dictionary<string, string>();
 
         private static BuildSetting buildSetting = null;
+
+        private static string[] ignoreFileList =
+        {
+            "AtlasProperty.asset",
+            "BuildProperty.asset",
+            "BuildSetting.asset",
+            "DLLSetting.asset",
+        };
 
         public static string FilePathPrefix { get => filePathPrefix; }
 
@@ -361,7 +370,7 @@ namespace Fusion.Frameworks.Assets.Editor
             if (fileInfo.Name.EndsWith(".spriteatlas"))
                 return false;
 
-            if (fileInfo.Name.EndsWith(".asset"))
+            if (ignoreFileList.Contains(fileInfo.Name))
                 return false;
 
             return true;
