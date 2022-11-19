@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Fusion.Frameworks.Editor;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
@@ -15,7 +16,7 @@ namespace Fusion.Frameworks.Assets.Editor
     /// </summary>
     public class AssetsPacker
     {
-        private static string filePathPrefix = "Assets/GameAssets";
+        private static string filePathPrefix = Builder.filePathPrefix;
         private static string assetBundleSuffix = AssetsConfig.assetBundleSuffix;
 
         private static Dictionary<string, string> assetBundlesNameMap = new Dictionary<string, string>();
@@ -43,7 +44,7 @@ namespace Fusion.Frameworks.Assets.Editor
         }
 
         [MenuItem("AssetsManager/CreateGameAssetsFolder")]
-        public static void CreateGameAssetsFolder()
+        private static void CreateGameAssetsFolder()
         {
             int divideIndex = filePathPrefix.IndexOf("/");
             if (divideIndex != -1)
@@ -58,7 +59,7 @@ namespace Fusion.Frameworks.Assets.Editor
         }
 
         [MenuItem("AssetsManager/Pack")]
-        public static void Pack()
+        private static void Pack()
         {
             if (!AssetDatabase.IsValidFolder("Assets/StreamingAssets"))
             {
@@ -73,7 +74,7 @@ namespace Fusion.Frameworks.Assets.Editor
         }
 
         [MenuItem("AssetsManager/ClearAssetBundleName")]
-        public static void ClearAssetBundleName()
+        private static void ClearAssetBundleName()
         {
             ClearAssetBundleName(Application.dataPath.Substring(0, Application.dataPath.LastIndexOf("/") + 1) + filePathPrefix);
             EditorUtility.ClearProgressBar();
@@ -91,7 +92,7 @@ namespace Fusion.Frameworks.Assets.Editor
         }
 
         [MenuItem("AssetsManager/Build")]
-        private static void Build()
+        public static void Build()
         {
             ClearStreamingAssets();
             Pack();
@@ -118,8 +119,7 @@ namespace Fusion.Frameworks.Assets.Editor
 
         private static BuildTarget GetCurrentBuildTarget()
         {
-            BuildTarget buildTarget = buildSetting.buildTargetType == BuildTargetType.UseCurrentTarget ? EditorUserBuildSettings.activeBuildTarget : (BuildTarget)buildSetting.buildTargetType;
-            return buildTarget;
+            return Builder.GetCurrentBuildTarget();
         }
 
         private static void SetAssetBundleName(AssetImporter assetImporter, BuildProperty buildProperty, FileInfo fileInfo)

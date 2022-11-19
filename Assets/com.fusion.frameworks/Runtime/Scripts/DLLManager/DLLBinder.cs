@@ -23,10 +23,15 @@ namespace Fusion.Frameworks.DynamicDLL
             appDomain.DelegateManager.RegisterMethodDelegate<GameObject>();
         }
 
+        public virtual void RegisterCLRBinding()
+        {
+        }
+
         public void Register()
         {
             RegisterAdapters();
             RegisterMethodDelegate();
+            RegisterCLRBinding();
         }
     }
 }

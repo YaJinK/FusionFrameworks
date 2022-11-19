@@ -1,6 +1,7 @@
+using UnityEditor;
 using UnityEngine;
 
-namespace Fusion.Frameworks.Assets.Editor
+namespace Fusion.Frameworks.Editor
 {
     public enum CompressType {
         LZMA = 0,
@@ -29,5 +30,8 @@ namespace Fusion.Frameworks.Assets.Editor
 
         [SerializeField]
         public BuildTargetType buildTargetType = BuildTargetType.UseCurrentTarget;
+
+        [SerializeField]
+        public SceneAsset initScene;
     }
 }

@@ -2,6 +2,7 @@ using UnityEngine;
 using Fusion.Frameworks.Assets;
 using System.IO;
 using System;
+using ILRuntime.Runtime.Enviorment;
 
 namespace Fusion.Frameworks.DynamicDLL
 {
@@ -26,7 +27,7 @@ namespace Fusion.Frameworks.DynamicDLL
                     MemoryStream memoryStream = new MemoryStream(textAsset.bytes);
 
                     appDomain.LoadAssembly(memoryStream);
-
+                    LitJson.JsonMapper.RegisterILRuntimeCLRRedirection(appDomain);
                     Type classType = Type.GetType("Fusion.Frameworks.DynamicDLL.DLLCustomBinder, Assembly-CSharp");
                     DLLBinder dllBinder = classType != null ? (DLLBinder)Activator.CreateInstance(classType, appDomain) : new DLLBinder(appDomain);
                     dllBinder.Register();

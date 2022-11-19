@@ -127,7 +127,7 @@ namespace Fusion.Frameworks.UI
             GameObject gameObject = AssetsUtility.CreateGameObject(path, rootObject);
             string className = data.Name.Replace("/", ".");
 
-#if !UNITY_EDITOR
+#if UNITY_EDITOR
             Type classType = Type.GetType($"{className}, Assembly-CSharp");
             UIObject uiObject = classType != null ? (UIObject)Activator.CreateInstance(classType, data) : new UIObject(data);
 #else
@@ -198,7 +198,7 @@ namespace Fusion.Frameworks.UI
             }
             data.Name = path;
             string className = data.Name.Replace("/", ".");
-#if !UNITY_EDITOR
+#if UNITY_EDITOR
             Type classType = Type.GetType($"{className}, Assembly-CSharp");
             UIObject uiObject = classType != null ? (UIObject)Activator.CreateInstance(classType, data) : new UIObject(data);
 #else

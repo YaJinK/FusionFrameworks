@@ -8,7 +8,6 @@ using System.Text;
 using UnityEditor;
 using UnityEditor.Compilation;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace Fusion.Frameworks.DynamicDLL.Editor
 {
@@ -17,7 +16,10 @@ namespace Fusion.Frameworks.DynamicDLL.Editor
         private static List<string> scriptPaths = new List<string>();
         private static DLLSetting dllSetting = null;
         private static string customGeneratedPath = "Assets/Scripts/Generated";
+        private static string customCLRBindingPath = "Assets/Scripts/Generated/CLRBinding";
         private static string customAdapterPath = "Assets/Scripts/Generated/Adapters";
+        private static string dllOutput = "FusionTemp/DLL/Extra.dll";
+
         static DLLPacker()
         {
             dllSetting = AssetDatabase.LoadAssetAtPath<DLLSetting>(string.Format("{0}/{1}.asset", AssetsPacker.FilePathPrefix, typeof(DLLSetting).Name));
@@ -33,7 +35,23 @@ namespace Fusion.Frameworks.DynamicDLL.Editor
             }
         }
 
-        [MenuItem("DLLManager/GeneratBuildInAdapters")]
+        [MenuItem("DLLManager/GenerateCLRBinding")]
+        static void GenerateCLRBindingByAnalysis()
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain appDomain = new ILRuntime.Runtime.Enviorment.AppDomain();
+            using (System.IO.FileStream fs = new System.IO.FileStream(dllOutput, System.IO.FileMode.Open, System.IO.FileAccess.Read))
+            {
+                appDomain.LoadAssembly(fs);
+                Type classType = Type.GetType("Fusion.Frameworks.DynamicDLL.DLLCustomBinder, Assembly-CSharp");
+                DLLBinder dllBinder = classType != null ? (DLLBinder)Activator.CreateInstance(classType, appDomain) : new DLLBinder(appDomain);
+                dllBinder.Register();
+                ILRuntime.Runtime.CLRBinding.BindingCodeGenerator.GenerateBindingCode(appDomain, customCLRBindingPath);
+            }
+
+            AssetDatabase.Refresh();
+        }
+
+        [MenuItem("DLLManager/GenerateBuildInAdapters")]
         public static void GenerateBuildInAdapters()
         {
             string buildInAdapterPath = "Assets/com.fusion.frameworks/Runtime/Scripts/DLLManager/Adapters";
@@ -51,20 +69,20 @@ namespace Fusion.Frameworks.DynamicDLL.Editor
         }
 
         [MenuItem("DLLManager/GenerateCustomBinder")]
-        public static void GenerateCustomVBinder()
-        {   
+        public static void GenerateCustomBinder()
+        {
             if (AssetDatabase.IsValidFolder(customAdapterPath))
             {
                 AssetDatabase.DeleteAsset(customAdapterPath);
             }
-            Directory.CreateDirectory(customAdapterPath);
-
             StringBuilder dllCustomBinder = new StringBuilder();
             StringBuilder importString = new StringBuilder("using ILRuntime.Runtime.Enviorment;");
 
             StringBuilder adapters = null;
-            if (dllSetting.customAdapters != null)
+            if (dllSetting.customAdapters != null && dllSetting.customAdapters.Length > 0)
             {
+                
+                Directory.CreateDirectory(customAdapterPath);
                 adapters = new StringBuilder(@"
         public override void RegisterAdapters()
         {
@@ -92,7 +110,7 @@ namespace Fusion.Frameworks.DynamicDLL.Editor
             }
 
             StringBuilder methodDelegates = null;
-            if (dllSetting.customMethodDelegates != null)
+            if (dllSetting.customMethodDelegates != null && dllSetting.customMethodDelegates.Length > 0)
             {
                 methodDelegates = new StringBuilder(@"
         public override void RegisterMethodDelegate()
@@ -125,6 +143,12 @@ namespace Fusion.Frameworks.DynamicDLL
             {
                 dllCustomBinder.AppendLine(methodDelegates.ToString());
             }
+            dllCustomBinder.AppendLine(@"
+        public override void RegisterCLRBinding()
+        {
+            base.RegisterCLRBinding();
+            ILRuntime.Runtime.Generated.CLRBindings.Initialize(appDomain);
+        }");
             dllCustomBinder.AppendLine("    }");
             dllCustomBinder.AppendLine("}");
             using (System.IO.StreamWriter sw = new System.IO.StreamWriter($"{customGeneratedPath}/DLLCustomBinder.cs"))
@@ -134,18 +158,14 @@ namespace Fusion.Frameworks.DynamicDLL
             AssetDatabase.Refresh();
         }
 
-        [MenuItem("DLLManager/Pack")]
-        public static void Pack()
+        [MenuItem("DLLManager/Build")]
+        public static void Build()
         {
             if (dllSetting.scriptsForPack == null)
             {
                 return;
             }
 
-            if (!AssetDatabase.IsValidFolder("Assets/StreamingAssets"))
-            {
-                AssetDatabase.CreateFolder("Assets", "StreamingAssets");
-            }
             scriptPaths.Clear();
             for (int i = 0; i < dllSetting.scriptsForPack.Length; i++)
             {
@@ -161,11 +181,10 @@ namespace Fusion.Frameworks.DynamicDLL
                 Directory.CreateDirectory("FusionTemp/DLL");
             }
 
-            string output = "FusionTemp/DLL/Extra.dll";
             string productParentFolder = "Assets/GameAssets/Scripts";
             string productOutput = "Assets/GameAssets/Scripts/Extra.bytes";
 
-            AssemblyBuilder assemblyBuilder = new AssemblyBuilder(output, scriptPaths.ToArray());
+            AssemblyBuilder assemblyBuilder = new AssemblyBuilder(dllOutput, scriptPaths.ToArray());
             assemblyBuilder.excludeReferences = new string[] {
                 $"{EditorApplication.applicationContentsPath}/Managed/UnityEngine.dll".Replace("/", "\\")
             };
@@ -201,7 +220,7 @@ namespace Fusion.Frameworks.DynamicDLL
                         AssetDatabase.ImportAsset(productParentFolder);
 
                     }
-                    File.Copy(output, productOutput, true);
+                    File.Copy(dllOutput, productOutput, true);
                     AssetDatabase.ImportAsset(productOutput);
                 }
             };
@@ -210,6 +229,10 @@ namespace Fusion.Frameworks.DynamicDLL
             {
 
             }
+
+            GenerateCustomBinder();
+            GenerateCLRBindingByAnalysis();
+            AssetDatabase.Refresh();
         }
 
         private static void CollectCSharpFile(string path)
@@ -244,7 +267,7 @@ namespace Fusion.Frameworks.DynamicDLL
             return fileInfo.Name.EndsWith(".cs");
         }
 
-        private static void BackupCSharp()
+        public static void BackupCSharp()
         {
             for (int i = 0; i < dllSetting.scriptsForPack.Length; i++)
             {
