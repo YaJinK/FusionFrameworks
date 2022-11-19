@@ -8,14 +8,10 @@ namespace Fusion.Frameworks.DynamicDLL
         {
         }
 
-        public override void RegisterAdapters()
+        public override void RegisterCLRBinding()
         {
-            base.RegisterAdapters();
-        }
-
-        public override void RegisterMethodDelegate()
-        {
-            base.RegisterMethodDelegate();
+            base.RegisterCLRBinding();
+            ILRuntime.Runtime.Generated.CLRBindings.Initialize(appDomain);
         }
     }
 }

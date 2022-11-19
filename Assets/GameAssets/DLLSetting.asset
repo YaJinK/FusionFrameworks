@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scriptsForPack:
   - {fileID: 102900000, guid: 3e90c893ca62b7a40bba8529341e0d9c, type: 3}
-  customAdapters:
-  - UnityEngine.MonoBehaviour,UnityEngine
+  customAdapters: []
+  customMethodDelegates: []

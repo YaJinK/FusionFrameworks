@@ -1,7 +1,6 @@
 using Fusion.Frameworks.DynamicDLL;
 using Fusion.Frameworks.Scenes;
 using Fusion.Frameworks.UI;
-using Prefabs.UI;
 using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
