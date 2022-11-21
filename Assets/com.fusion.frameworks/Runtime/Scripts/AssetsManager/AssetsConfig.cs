@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using LitJson;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -12,17 +13,17 @@ namespace Fusion.Frameworks.Assets
     {
         public static readonly string assetBundleSuffix = ".bundle";
 
-        private static Dictionary<string, string> spritePathAtlasNameMap = null;
+        private static Dictionary<string, string> assetBundleNameMap = null;
 
         public static string GetAssetBundleName(string path)
         {
-            if (spritePathAtlasNameMap == null)
+            if (assetBundleNameMap == null)
             {
-                LoadAssetBundlesNameMap(Application.streamingAssetsPath);
+                LoadAssetBundlesNameMap(AssetsManager.LoadPath);
             }
 
-            if (spritePathAtlasNameMap != null && spritePathAtlasNameMap.ContainsKey(path))
-                return spritePathAtlasNameMap[path];
+            if (assetBundleNameMap != null && assetBundleNameMap.ContainsKey(path))
+                return assetBundleNameMap[path];
             else
                 return (path + assetBundleSuffix).ToLower();
         }
@@ -30,16 +31,16 @@ namespace Fusion.Frameworks.Assets
         public static void LoadAssetBundlesNameMap(string path)
         {
             string configJsonFilePath = Path.Combine(path, "AssetBundleConfig.json");
-            // Debug.Log(configJsonFilePath);
             System.Uri uri = new System.Uri(configJsonFilePath);
-            // Debug.Log(uri);
             UnityWebRequest webRequest = UnityWebRequest.Get(uri);
             UnityWebRequestAsyncOperation requestAOp = webRequest.SendWebRequest();
             while (requestAOp.isDone == false)
             {
             }
             if (!(webRequest.result == UnityWebRequest.Result.ConnectionError) && !(webRequest.result == UnityWebRequest.Result.ProtocolError))
-                spritePathAtlasNameMap = JsonUtility.FromJson<DictionarySerialization<string, string>>(webRequest.downloadHandler.text).ToDictionary();
+            {
+                assetBundleNameMap = JsonMapper.ToObject<Dictionary<string, string>>(webRequest.downloadHandler.text);
+            }
         }
     }
 }

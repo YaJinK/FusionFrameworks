@@ -1,3 +1,4 @@
+using Fusion.Frameworks.Version;
 using UnityEditor;
 using UnityEngine;
 
@@ -33,5 +34,8 @@ namespace Fusion.Frameworks.Editor
 
         [SerializeField]
         public SceneAsset initScene;
+
+        [SerializeField]
+        public VersionData version;
     }
 }

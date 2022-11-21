@@ -19,7 +19,7 @@ namespace Fusion.Frameworks.Assets
         public static string LoadPath {
             get
             {
-                return Application.streamingAssetsPath;
+                return $"{Application.streamingAssetsPath}/ManagedAssets";
             }
         }
 
@@ -32,7 +32,7 @@ namespace Fusion.Frameworks.Assets
                     instance = assetsManagerObject.AddComponent<AssetsManager>();
                     DontDestroyOnLoad(assetsManagerObject);
                    
-                    AssetBundle assetBundle = AssetBundle.LoadFromFile(Path.Combine(LoadPath, "AssetBundleManifest"));
+                    AssetBundle assetBundle = AssetBundle.LoadFromFile(Path.Combine(LoadPath, "ManagedAssets"));
                     assetBundleManifest = assetBundle.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
                 }
                 return instance; 

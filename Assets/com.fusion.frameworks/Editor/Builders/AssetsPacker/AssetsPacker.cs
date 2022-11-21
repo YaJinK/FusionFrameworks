@@ -1,4 +1,5 @@
 ﻿using Fusion.Frameworks.Editor;
+using LitJson;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,6 +23,8 @@ namespace Fusion.Frameworks.Assets.Editor
         private static Dictionary<string, string> assetBundlesNameMap = new Dictionary<string, string>();
 
         private static BuildSetting buildSetting = null;
+
+        private static string assetsOutput = "FusionTemp/AssetsCache";
 
         private static string[] ignoreFileList =
         {
@@ -61,14 +64,16 @@ namespace Fusion.Frameworks.Assets.Editor
         [MenuItem("AssetsManager/Pack")]
         private static void Pack()
         {
-            if (!AssetDatabase.IsValidFolder("Assets/StreamingAssets"))
+            string outputDir = GetAssetsOutput();
+            if (!Directory.Exists(outputDir))
             {
-                AssetDatabase.CreateFolder("Assets", "StreamingAssets");
+                Directory.CreateDirectory(outputDir);
             }
             assetBundlesNameMap.Clear();
             CreateGameAssetsFolder();
             PackFolder(Application.dataPath.Substring(0, Application.dataPath.LastIndexOf("/") + 1) + filePathPrefix);
             GenerateConfigFile();
+            GenerateVersionFile();
             EditorUtility.ClearProgressBar();
             AssetDatabase.Refresh();
         }
@@ -81,39 +86,32 @@ namespace Fusion.Frameworks.Assets.Editor
             AssetDatabase.Refresh();
         }
 
-        [MenuItem("AssetsManager/ClearStreamingAssets")]
-        private static void ClearStreamingAssets()
-        {
-            if (AssetDatabase.IsValidFolder("Assets/StreamingAssets"))
-            {
-                AssetDatabase.DeleteAsset("Assets/StreamingAssets");
-            }
-            AssetDatabase.Refresh();
-        }
-
         [MenuItem("AssetsManager/Build")]
         public static void Build()
         {
-            ClearStreamingAssets();
             Pack();
             PackAssetBundle();
         }
 
+        private static string GetAssetsOutput()
+        {
+            string outputDir = $"{assetsOutput}/{buildSetting.version}/ManagedAssets";
+            return outputDir;
+        }
+
         private static void PackAssetBundle()
         {
-            if (!AssetDatabase.IsValidFolder("Assets/StreamingAssets"))
+            string outputDir = GetAssetsOutput();
+            if (!Directory.Exists(outputDir))
             {
-                AssetDatabase.CreateFolder("Assets", "StreamingAssets");
+                Directory.CreateDirectory(outputDir);
             }
 
             BuildAssetBundleOptions compressType = (BuildAssetBundleOptions)buildSetting.compressType;
             BuildAssetBundleOptions optionsAll = compressType;
 
-            BuildPipeline.BuildAssetBundles(Application.streamingAssetsPath, optionsAll, GetCurrentBuildTarget());
-
-            AssetDatabase.Refresh();
-            AssetDatabase.RenameAsset("Assets/StreamingAssets/StreamingAssets", "AssetBundleManifest");
-            AssetDatabase.RenameAsset("Assets/StreamingAssets/StreamingAssets.manifest", "AssetBundleManifest.manifest");
+            BuildPipeline.BuildAssetBundles(outputDir, optionsAll, GetCurrentBuildTarget());
+            DeleteManifest(outputDir);
             AssetDatabase.Refresh();
         }
 
@@ -144,9 +142,9 @@ namespace Fusion.Frameworks.Assets.Editor
 
             List<AssetBundleBuild> assetBundleBuilds = new List<AssetBundleBuild>();
             string assetBundlePath = releativePath.Substring(filePathPrefix.Length + 1);
-            if (AssetDatabase.IsValidFolder("Assets/StreamingAssets/" + assetBundlePath))
+            if (Directory.Exists($"{GetAssetsOutput()}/{assetBundlePath}"))
             {
-                AssetDatabase.DeleteAsset("Assets/StreamingAssets/" + assetBundlePath);
+                Directory.Delete($"{GetAssetsOutput()}/{assetBundlePath}", true);
             }
             if (buildProperty.type == BuildType.Folder)
             {
@@ -196,7 +194,7 @@ namespace Fusion.Frameworks.Assets.Editor
             BuildAssetBundleOptions compressType = (BuildAssetBundleOptions)buildProperty.compressType;
             BuildAssetBundleOptions optionsAll = compressType;
 
-            BuildPipeline.BuildAssetBundles(Application.streamingAssetsPath, assetBundleBuilds.ToArray(), optionsAll, GetCurrentBuildTarget());
+            BuildPipeline.BuildAssetBundles(GetAssetsOutput(), assetBundleBuilds.ToArray(), optionsAll, GetCurrentBuildTarget());
 
             AssetDatabase.Refresh();
         }
@@ -393,20 +391,83 @@ namespace Fusion.Frameworks.Assets.Editor
 
         private static void GenerateConfigFile()
         {
-           
-            if (!AssetDatabase.IsValidFolder("Assets/StreamingAssets"))
-            {
-                AssetDatabase.CreateFolder("Assets", "StreamingAssets");
-            }
-
-            string jsonFileName = Application.streamingAssetsPath + "/AssetBundleConfig.json";
+            string jsonFileName = GetAssetsOutput() + "/AssetBundleConfig.json";
             FileStream jsonFileStream = File.Open(jsonFileName, FileMode.Create);
             StreamWriter jsonFileSW = new StreamWriter(jsonFileStream);
-            jsonFileSW.Write(JsonUtility.ToJson(new DictionarySerialization<string, string>(assetBundlesNameMap)));
+            string jsonStr = JsonMapper.ToJson(assetBundlesNameMap);
+            jsonFileSW.Write(jsonStr);
             jsonFileSW.Close();
             jsonFileStream.Close();
 
             AssetDatabase.Refresh();
+        }
+
+        private static void DeleteManifest(string path)
+        {
+            path = path.Replace("\\", "/");
+            string[] fileList = Directory.GetFiles(path);
+            for (int index = 0; index < fileList.Length; index++)
+            {
+                FileInfo fileInfo = new FileInfo(fileList[index]);
+                if (fileInfo.Name.EndsWith(".manifest"))
+                {
+                    File.Delete(fileList[index]);
+                }
+            }
+            string[] dirList = Directory.GetDirectories(path);
+            for (int index = 0; index < dirList.Length; index++)
+            {
+                DeleteManifest(dirList[index]);
+            }
+        }
+
+        private static void GenerateVersionFile()
+        {
+            string jsonFileName = $"{GetAssetsOutput()}/Version.json";
+            FileStream jsonFileStream = File.Open(jsonFileName, FileMode.Create);
+            StreamWriter jsonFileSW = new StreamWriter(jsonFileStream);
+            string jsonStr = JsonMapper.ToJson(buildSetting.version);
+            jsonFileSW.Write(jsonStr);
+            jsonFileSW.Close();
+            jsonFileStream.Close();
+
+            AssetDatabase.Refresh();
+        }
+
+        public static void CopyAssetsToStreamingAssets()
+        {
+            if (Directory.Exists($"{Application.streamingAssetsPath}/ManagedAssets"))
+            {
+                Directory.Delete($"{Application.streamingAssetsPath}/ManagedAssets", true);
+            }
+            string output = GetAssetsOutput();
+            if (Directory.Exists(output))
+            {
+                CopyDirectoryToStreamingAssets(output);
+            }
+        }
+
+        private static void CopyDirectoryToStreamingAssets(string path)
+        {
+            path = path.Replace("\\", "/");
+            string[] fileList = Directory.GetFiles(path);
+            for (int index = 0; index < fileList.Length; index++)
+            {
+                FileInfo fileInfo = new FileInfo(fileList[index]);
+                string fileDirName = fileInfo.DirectoryName.Replace("\\", "/");
+                string targetDir = $"{Application.streamingAssetsPath}/{fileInfo.DirectoryName.Substring(fileDirName.LastIndexOf("ManagedAssets"))}";
+                if (!Directory.Exists(targetDir))
+                {
+                    Directory.CreateDirectory(targetDir);
+                }
+                
+                File.Copy(fileInfo.FullName, $"{targetDir}/{fileInfo.Name}");
+            }
+            string[] dirList = Directory.GetDirectories(path);
+            for (int index = 0; index < dirList.Length; index++)
+            {
+                CopyDirectoryToStreamingAssets(dirList[index]);
+            }
         }
     }
 }
