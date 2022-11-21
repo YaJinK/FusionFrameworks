@@ -15,3 +15,7 @@ MonoBehaviour:
   compressType: 256
   buildTargetType: 0
   initScene: {fileID: 0}
+  version:
+    large: 0
+    middle: 0
+    small: 0

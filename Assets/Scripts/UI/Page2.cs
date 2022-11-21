@@ -46,8 +46,6 @@ namespace Prefabs.UI
 
             GameObject image = UIUtility.Find(gameObject, "Image");
             Page2Data page2Data = data as Page2Data;
-            Debug.LogError(page2Data.Name);
-            Debug.LogError(page2Data.spriteName);
             AssetsUtility.SetSprite(image, page2Data.spriteName);
         }
     }
