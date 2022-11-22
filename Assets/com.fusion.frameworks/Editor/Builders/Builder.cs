@@ -20,6 +20,9 @@ namespace Fusion.Frameworks.Editor
 
         public static string filePathPrefix = "Assets/GameAssets";
         private static BuildSetting buildSetting = null;
+
+        public static BuildSetting BuildSetting { get => buildSetting; }
+
         static Builder()
         {
             buildSetting = AssetDatabase.LoadAssetAtPath<BuildSetting>(string.Format("{0}/{1}.asset", filePathPrefix, typeof(BuildSetting).Name));
@@ -49,7 +52,6 @@ namespace Fusion.Frameworks.Editor
         public static void BuildPlayer()
         {
             DLLPacker.BackupCSharp();
-            AssetsPacker.CopyAssetsToStreamingAssets();
 
             string path = null;
             if (buildSetting.initScene != null)
@@ -60,33 +62,33 @@ namespace Fusion.Frameworks.Editor
             {
                 path = EditorSceneManager.GetActiveScene().path;
             }
-            //BuildTarget target = GetCurrentBuildTarget();
-            //string output = $"Output/{target}";
-            //if (!Directory.Exists(output))
-            //{
-            //    Directory.CreateDirectory(output);
-            //}
+            BuildTarget target = GetCurrentBuildTarget();
+            string output = $"Output/{target}";
+            if (!Directory.Exists(output))
+            {
+                Directory.CreateDirectory(output);
+            }
 
-            //string suffix = targetSuffix.ContainsKey(target) ? targetSuffix[target] : "";
-            
-            //BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();
-            //buildPlayerOptions.scenes = new[] { path };
-            //buildPlayerOptions.locationPathName = $"{output}/{Application.productName}{suffix}";
-            //buildPlayerOptions.target = target;
-            //buildPlayerOptions.options = BuildOptions.None;
+            string suffix = targetSuffix.ContainsKey(target) ? targetSuffix[target] : "";
 
-            //BuildReport report = BuildPipeline.BuildPlayer(buildPlayerOptions);
-            //BuildSummary summary = report.summary;
+            BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();
+            buildPlayerOptions.scenes = new[] { path };
+            buildPlayerOptions.locationPathName = $"{output}/{Application.productName}{suffix}";
+            buildPlayerOptions.target = target;
+            buildPlayerOptions.options = BuildOptions.None;
 
-            //if (summary.result == BuildResult.Succeeded)
-            //{
-            //    Debug.Log("Build succeeded: " + summary.totalSize + " bytes");
-            //}
+            BuildReport report = BuildPipeline.BuildPlayer(buildPlayerOptions);
+            BuildSummary summary = report.summary;
 
-            //if (summary.result == BuildResult.Failed)
-            //{
-            //    Debug.Log("Build failed");
-            //}
+            if (summary.result == BuildResult.Succeeded)
+            {
+                Debug.Log("Build succeeded: " + summary.totalSize + " bytes");
+            }
+
+            if (summary.result == BuildResult.Failed)
+            {
+                Debug.Log("Build failed");
+            }
             DLLPacker.RecoverCSharp();
         }
 

@@ -3,6 +3,7 @@ using LitJson;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using UnityEditor;
 using UnityEditor.U2D;
 using UnityEngine;
@@ -22,8 +23,6 @@ namespace Fusion.Frameworks.Assets.Editor
 
         private static Dictionary<string, string> assetBundlesNameMap = new Dictionary<string, string>();
 
-        private static BuildSetting buildSetting = null;
-
         private static string assetsOutput = "FusionTemp/AssetsCache";
 
         private static string[] ignoreFileList =
@@ -35,16 +34,6 @@ namespace Fusion.Frameworks.Assets.Editor
         };
 
         public static string FilePathPrefix { get => filePathPrefix; }
-
-        static AssetsPacker() {
-            buildSetting = AssetDatabase.LoadAssetAtPath<BuildSetting>(string.Format("{0}/{1}.asset", filePathPrefix, typeof(BuildSetting).Name));
-            if (buildSetting == null)
-            {
-                buildSetting = ScriptableObject.CreateInstance<BuildSetting>();
-                AssetDatabase.CreateAsset(buildSetting, $"{filePathPrefix}/BuildSetting.asset");
-                AssetDatabase.Refresh();
-            }
-        }
 
         [MenuItem("AssetsManager/CreateGameAssetsFolder")]
         private static void CreateGameAssetsFolder()
@@ -91,11 +80,19 @@ namespace Fusion.Frameworks.Assets.Editor
         {
             Pack();
             PackAssetBundle();
+            GenerateMD5();
+            CopyAssetsToStreamingAssets();
         }
 
         private static string GetAssetsOutput()
         {
-            string outputDir = $"{assetsOutput}/{buildSetting.version}/ManagedAssets";
+            string outputDir = $"{GetVersionTempPath()}/ManagedAssets";
+            return outputDir;
+        }
+
+        private static string GetVersionTempPath()
+        {
+            string outputDir = $"{assetsOutput}/{GetCurrentBuildTarget()}/{Builder.BuildSetting.version}";
             return outputDir;
         }
 
@@ -107,7 +104,7 @@ namespace Fusion.Frameworks.Assets.Editor
                 Directory.CreateDirectory(outputDir);
             }
 
-            BuildAssetBundleOptions compressType = (BuildAssetBundleOptions)buildSetting.compressType;
+            BuildAssetBundleOptions compressType = (BuildAssetBundleOptions)Builder.BuildSetting.compressType;
             BuildAssetBundleOptions optionsAll = compressType;
 
             BuildPipeline.BuildAssetBundles(outputDir, optionsAll, GetCurrentBuildTarget());
@@ -252,6 +249,8 @@ namespace Fusion.Frameworks.Assets.Editor
                                 atlasName = "atlas";
                             }
 
+                            string abName = releativePath.Substring(filePathPrefix.Length + 1) + "/" + atlasName + assetBundleSuffix;
+
                             // 还没有创建过图集
                             SpriteAtlas spriteAtlas = AssetDatabase.LoadAssetAtPath<SpriteAtlas>(releativePath + "/" + atlasName);
                             if (spriteAtlas == null)
@@ -275,7 +274,6 @@ namespace Fusion.Frameworks.Assets.Editor
                             texImpPlatSettings.format = TextureImporterFormat.ASTC_8x8;
                             spriteAtlas.SetPlatformSettings(texImpPlatSettings);
 
-                            string abName = releativePath.Substring(filePathPrefix.Length + 1) + "/" + atlasName + assetBundleSuffix;
                             assetBundlesNameMap[releativePath.Substring(filePathPrefix.Length + 1) + "/" + fileInfo.Name.Substring(0, fileInfo.Name.LastIndexOf("."))] = abName.ToLower();
                             assetImporter.assetBundleName = abName;
                             AssetDatabase.SaveAssets();
@@ -315,7 +313,7 @@ namespace Fusion.Frameworks.Assets.Editor
             if (buildProperty == null)
                 buildProperty = ScriptableObject.CreateInstance<BuildProperty>();
 
-            if (buildProperty.compressType == FolderCompressType.UseBuildSetting || (CompressType)buildProperty.compressType == buildSetting.compressType)
+            if (buildProperty.compressType == FolderCompressType.UseBuildSetting || (CompressType)buildProperty.compressType == Builder.BuildSetting.compressType)
             {
                 AtlasProperty atlasProperty = GetProperty<AtlasProperty>(releativePath);
                 SetFolderAssetBundleName(path, buildProperty, atlasProperty);
@@ -398,8 +396,6 @@ namespace Fusion.Frameworks.Assets.Editor
             jsonFileSW.Write(jsonStr);
             jsonFileSW.Close();
             jsonFileStream.Close();
-
-            AssetDatabase.Refresh();
         }
 
         private static void DeleteManifest(string path)
@@ -426,12 +422,10 @@ namespace Fusion.Frameworks.Assets.Editor
             string jsonFileName = $"{GetAssetsOutput()}/Version.json";
             FileStream jsonFileStream = File.Open(jsonFileName, FileMode.Create);
             StreamWriter jsonFileSW = new StreamWriter(jsonFileStream);
-            string jsonStr = JsonMapper.ToJson(buildSetting.version);
+            string jsonStr = JsonMapper.ToJson(Builder.BuildSetting.version);
             jsonFileSW.Write(jsonStr);
             jsonFileSW.Close();
             jsonFileStream.Close();
-
-            AssetDatabase.Refresh();
         }
 
         public static void CopyAssetsToStreamingAssets()
@@ -469,6 +463,46 @@ namespace Fusion.Frameworks.Assets.Editor
                 CopyDirectoryToStreamingAssets(dirList[index]);
             }
         }
+
+        private static void GenerateMD5() { 
+            Dictionary<string, string> md5Map = new Dictionary<string, string>();
+
+            string output = $"{GetAssetsOutput()}/";
+
+            System.Action<string> filesCollecter = null;
+            filesCollecter = delegate (string path)
+            {
+                string[] fileStrs = Directory.GetFiles(path);
+
+                for (int i=0; i <fileStrs.Length; i++)
+                {
+                    FileStream fileStream = File.OpenRead(fileStrs[i]);
+                    MD5 md5 = MD5.Create();
+                    byte[] md5Bytes = md5.ComputeHash(fileStream);
+                    fileStream.Close();
+                    string md5Str = System.BitConverter.ToString(md5Bytes).Replace("-", "");
+                    md5Map.Add(fileStrs[i].Replace("\\", "/").Replace(output, ""), md5Str);
+                    md5.Clear();
+                }
+
+                string[] dirs = Directory.GetDirectories(path);
+                for (int i= 0; i < dirs.Length; i++)
+                {
+                    filesCollecter(dirs[i]);
+                }
+            };
+
+            filesCollecter(output);
+
+            string jsonFileName = GetVersionTempPath() + "/MD5.json";
+            FileStream jsonFileStream = File.Open(jsonFileName, FileMode.Create);
+            StreamWriter jsonFileSW = new StreamWriter(jsonFileStream);
+            string jsonStr = JsonMapper.ToJson(md5Map);
+            jsonFileSW.Write(jsonStr);
+            jsonFileSW.Close();
+            jsonFileStream.Close();
+        }
+
     }
 }
 
