@@ -21,6 +21,12 @@ using ILRuntime.CLR.Method;
 using ILRuntime.CLR.Utils;
 using Object = System.Object;
 
+#if DEBUG && !DISABLE_ILRUNTIME_DEBUG
+using AutoList = System.Collections.Generic.List<object>;
+#else
+using AutoList = ILRuntime.Other.UncheckedList<object>;
+#endif
+
 namespace LitJson
 {
     /// <summary>
@@ -1080,12 +1086,13 @@ namespace LitJson
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(esp, 1);
             ptr_of_this_method = ILIntepreter.Minus(esp, 1);
-            System.String json = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, mStack));
+            AutoList mStackObject = (AutoList)mStack;
+            System.String json = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, mStackObject));
             intp.Free(ptr_of_this_method);
             var type = method.GenericArguments[0].ReflectionType;
             var result_of_this_method = ReadValue(type, new JsonReader(json));
 
-            return ILIntepreter.PushObject(__ret, mStack, result_of_this_method);
+            return ILIntepreter.PushObject(__ret, mStackObject, result_of_this_method);
         }
 
         public unsafe static StackObject* JsonToObject2(ILIntepreter intp, StackObject* esp, IList<object> mStack, CLRMethod method, bool isNewObj)
@@ -1094,12 +1101,13 @@ namespace LitJson
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(esp, 1);
             ptr_of_this_method = ILIntepreter.Minus(esp, 1);
-            JsonReader json = (JsonReader)typeof(JsonReader).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, mStack));
+            AutoList mStackObject = (AutoList)mStack;
+            JsonReader json = (JsonReader)typeof(JsonReader).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, mStackObject));
             intp.Free(ptr_of_this_method);
             var type = method.GenericArguments[0].ReflectionType;
             var result_of_this_method = ReadValue(type, json);
 
-            return ILIntepreter.PushObject(__ret, mStack, result_of_this_method);
+            return ILIntepreter.PushObject(__ret, mStackObject, result_of_this_method);
         }
 
         public unsafe static StackObject* JsonToObject3(ILIntepreter intp, StackObject* esp, IList<object> mStack, CLRMethod method, bool isNewObj)
@@ -1108,12 +1116,13 @@ namespace LitJson
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(esp, 1);
             ptr_of_this_method = ILIntepreter.Minus(esp, 1);
-            TextReader json = (TextReader)typeof(TextReader).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, mStack));
+            AutoList mStackObject = (AutoList)mStack;
+            TextReader json = (TextReader)typeof(TextReader).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, mStackObject));
             intp.Free(ptr_of_this_method);
             var type = method.GenericArguments[0].ReflectionType;
             var result_of_this_method = ReadValue(type, new JsonReader(json));
 
-            return ILIntepreter.PushObject(__ret, mStack, result_of_this_method);
+            return ILIntepreter.PushObject(__ret, mStackObject, result_of_this_method);
         }
     }
 }

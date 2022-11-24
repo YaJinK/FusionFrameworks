@@ -19,7 +19,7 @@ namespace Fusion.Frameworks.Assets
         {
             if (assetBundleNameMap == null)
             {
-                LoadAssetBundlesNameMap(AssetsManager.LoadPath);
+                LoadAssetBundlesNameMap();
             }
 
             if (assetBundleNameMap != null && assetBundleNameMap.ContainsKey(path))
@@ -28,7 +28,16 @@ namespace Fusion.Frameworks.Assets
                 return (path + assetBundleSuffix).ToLower();
         }
 
-        public static void LoadAssetBundlesNameMap(string path)
+        private static void LoadAssetBundlesNameMap()
+        {
+            LoadAssetBundlesNameMap(AssetsManager.PersistentLoadPath);
+            if (assetBundleNameMap == null)
+            {
+                LoadAssetBundlesNameMap(AssetsManager.StreamingLoadPath);
+            }
+        }
+
+        private static void LoadAssetBundlesNameMap(string path)
         {
             string configJsonFilePath = Path.Combine(path, "AssetBundleConfig.json");
             System.Uri uri = new System.Uri(configJsonFilePath);

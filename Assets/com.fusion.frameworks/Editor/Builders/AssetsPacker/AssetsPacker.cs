@@ -87,7 +87,6 @@ namespace Fusion.Frameworks.Assets.Editor
             PackAssetBundle();
             GenerateMD5();
             GeneratePatchs();
-            CopyAssetsToStreamingAssets();
         }
 
         private static string GetAssetsOutput()
@@ -445,6 +444,7 @@ namespace Fusion.Frameworks.Assets.Editor
             jsonFileStream.Close();
         }
 
+        [MenuItem("AssetsManager/CopyAssetsToStreamingAssets")]
         public static void CopyAssetsToStreamingAssets()
         {
             if (Directory.Exists($"{Application.streamingAssetsPath}/ManagedAssets"))

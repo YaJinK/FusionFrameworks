@@ -3,7 +3,6 @@ using UnityEditor;
 
 namespace Fusion.Frameworks.Utilities
 {
-
     public class ZipUtility
     {
         public static void Compress(string folder, string output)

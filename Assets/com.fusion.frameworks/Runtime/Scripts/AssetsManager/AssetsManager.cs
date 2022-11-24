@@ -16,10 +16,18 @@ namespace Fusion.Frameworks.Assets
         private static AssetBundleManifest assetBundleManifest;
         private static Dictionary<string, AssetBundleCreateRequest> asyncCreateRequests = new Dictionary<string, AssetBundleCreateRequest>();
 
-        public static string LoadPath {
+        public static string StreamingLoadPath {
             get
             {
                 return $"{Application.streamingAssetsPath}/ManagedAssets";
+            }
+        }
+
+        public static string PersistentLoadPath
+        {
+            get
+            {
+                return $"{Application.persistentDataPath}/ManagedAssets";
             }
         }
 
@@ -32,11 +40,29 @@ namespace Fusion.Frameworks.Assets
                     instance = assetsManagerObject.AddComponent<AssetsManager>();
                     DontDestroyOnLoad(assetsManagerObject);
                    
-                    AssetBundle assetBundle = AssetBundle.LoadFromFile(Path.Combine(LoadPath, "ManagedAssets"));
+                    AssetBundle assetBundle = LoadFromFile("ManagedAssets");
                     assetBundleManifest = assetBundle.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
+                    assetBundle.Unload(false);
                 }
                 return instance; 
             } 
+        }
+
+        private static AssetBundle LoadFromFile(string assetBundleName)
+        {
+            string persistentPath = Path.Combine(PersistentLoadPath, assetBundleName);
+            string loadPath = File.Exists(persistentPath) ? persistentPath : Path.Combine(StreamingLoadPath, assetBundleName);
+
+            AssetBundle assetBundle = AssetBundle.LoadFromFile(loadPath);
+            return assetBundle;
+        }
+
+        private static AssetBundleCreateRequest LoadFromFileAsync(string assetBundleName)
+        {
+            string persistentPath = Path.Combine(PersistentLoadPath, assetBundleName);
+            string loadPath = File.Exists(persistentPath) ? persistentPath : Path.Combine(StreamingLoadPath, assetBundleName);
+            AssetBundleCreateRequest assetBundleCreateRequest = AssetBundle.LoadFromFileAsync(loadPath);
+            return assetBundleCreateRequest;
         }
 
         public static AssetBundleManifest AssetBundleManifest { get => assetBundleManifest; }
@@ -48,7 +74,7 @@ namespace Fusion.Frameworks.Assets
             AssetBundle assetBundle = AssetReferences.Instance.Get(assetBundleName);
             if (assetBundle == null)
             {
-                assetBundle = AssetBundle.LoadFromFile(Path.Combine(LoadPath, assetBundleName));
+                assetBundle = LoadFromFile(assetBundleName);
             }
             AssetReferences.Instance.Reference(assetBundle);
             return assetBundle;
@@ -64,7 +90,7 @@ namespace Fusion.Frameworks.Assets
                 assetBundles[i] = AssetReferences.Instance.Get(assetBundleDependencies[i]);
                 if (assetBundles[i] == null)
                 {
-                    assetBundles[i] = AssetBundle.LoadFromFile(Path.Combine(LoadPath, assetBundleDependencies[i]));
+                    assetBundles[i] = LoadFromFile(assetBundleDependencies[i]);
                 }
                 AssetReferences.Instance.Reference(assetBundles[i]);
             }
@@ -81,7 +107,7 @@ namespace Fusion.Frameworks.Assets
                 AssetBundleCreateRequest assetBundleCreateRequest;
                 if (!asyncCreateRequests.ContainsKey(assetBundleName))
                 {
-                    assetBundleCreateRequest = AssetBundle.LoadFromFileAsync(Path.Combine(LoadPath, assetBundleName));
+                    assetBundleCreateRequest = LoadFromFileAsync(assetBundleName);
                     asyncCreateRequests[assetBundleName] = assetBundleCreateRequest;
                     yield return assetBundleCreateRequest;
                 } else
@@ -118,7 +144,7 @@ namespace Fusion.Frameworks.Assets
                     AssetBundleCreateRequest assetBundleCreateRequest;
                     if (!asyncCreateRequests.ContainsKey(assetBundleDependencies[i]))
                     {
-                        assetBundleCreateRequest = AssetBundle.LoadFromFileAsync(Path.Combine(LoadPath, assetBundleDependencies[i]));
+                        assetBundleCreateRequest = LoadFromFileAsync(assetBundleDependencies[i]);
                         asyncCreateRequests[assetBundleDependencies[i]] = assetBundleCreateRequest;
                     } else
                     {
