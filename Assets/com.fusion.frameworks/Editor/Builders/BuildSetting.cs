@@ -4,6 +4,11 @@ using UnityEngine;
 
 namespace Fusion.Frameworks.Editor
 {
+    public enum BuildMode { 
+        Debug,
+        Release
+    }
+
     public enum CompressType {
         LZMA = 0,
         Uncompressed = 1,
@@ -26,6 +31,8 @@ namespace Fusion.Frameworks.Editor
     [CreateAssetMenu(fileName = "Assets/GameAssets/BuildSetting", menuName = "FusionConfig/Build Setting")]
     public class BuildSetting : ScriptableObject
     {
+        [SerializeField]
+        public BuildMode buildMode = BuildMode.Debug;
         [SerializeField]
         public CompressType compressType = CompressType.LZ4;
 

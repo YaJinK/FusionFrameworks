@@ -1,12 +1,17 @@
-﻿using Fusion.Frameworks.Editor;
+﻿using Codice.Utils;
+using Fusion.Frameworks.Editor;
+using Fusion.Frameworks.Utilities;
+using Fusion.Frameworks.Version;
 using LitJson;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Security.Cryptography;
 using UnityEditor;
 using UnityEditor.U2D;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.U2D;
 
 namespace Fusion.Frameworks.Assets.Editor
@@ -81,6 +86,7 @@ namespace Fusion.Frameworks.Assets.Editor
             Pack();
             PackAssetBundle();
             GenerateMD5();
+            GeneratePatchs();
             CopyAssetsToStreamingAssets();
         }
 
@@ -92,8 +98,19 @@ namespace Fusion.Frameworks.Assets.Editor
 
         private static string GetVersionTempPath()
         {
-            string outputDir = $"{assetsOutput}/{GetCurrentBuildTarget()}/{Builder.BuildSetting.version}";
+            string outputDir = $"{GetBuildModeTempPath()}/{Builder.BuildSetting.version}";
             return outputDir;
+        }
+        private static string GetBuildModeTempPath()
+        {
+            string outputDir = $"{assetsOutput}/{GetCurrentBuildTarget()}/{Builder.BuildSetting.buildMode}";
+            return outputDir;
+        }
+
+        private static string GetPatchTempPath()
+        {
+            string patchsPath = $"{GetVersionTempPath()}/Patchs";
+            return patchsPath;
         }
 
         private static void PackAssetBundle()
@@ -503,6 +520,92 @@ namespace Fusion.Frameworks.Assets.Editor
             jsonFileStream.Close();
         }
 
+        private static void GeneratePatchs()
+        {
+            VersionData currentVersion = Builder.BuildSetting.version;
+            string patchsPath = GetPatchTempPath();
+            if (Directory.Exists(patchsPath))
+            {
+                Directory.Delete(patchsPath, true);
+            }
+
+            Directory.CreateDirectory(patchsPath);
+            for (uint index = 0; index < currentVersion.Resources; index++)
+            {
+                VersionData oldVersion = new VersionData(currentVersion.Large, currentVersion.Middle, currentVersion.Small, index);
+
+                string oldPatchsPath = $"{GetBuildModeTempPath()}/{oldVersion}/Patchs";
+                if (Directory.Exists(oldPatchsPath))
+                {
+                    Directory.Delete(oldPatchsPath, true);
+                }
+
+                string oldAssetsPath = $"{GetBuildModeTempPath()}/{oldVersion}/ManagedAssets";
+                if (Directory.Exists(oldAssetsPath))
+                {
+                    Directory.Delete(oldAssetsPath, true);
+                }
+                GeneratePatch(oldVersion);
+            }
+        }
+
+        private static void GeneratePatch(VersionData oldVersion)
+        {
+            
+            string buildModePath = GetBuildModeTempPath();
+            string oldVersionPath = $"{buildModePath}/{oldVersion}";
+            if (Directory.Exists(oldVersionPath))
+            {
+                string patchsPath = GetPatchTempPath();
+                string tempAssets = $"{patchsPath}/R{oldVersion.Resources}/ManagedAssets";
+                Directory.CreateDirectory(tempAssets);
+                Dictionary<string, string> currentMD5Map = GetAssetsMD5(Builder.BuildSetting.version);
+                Dictionary<string, string> oldMD5Map = GetAssetsMD5(oldVersion);
+
+                List<string> currentMD5Keys = currentMD5Map.Keys.ToList();
+                for (int index = 0; index < currentMD5Keys.Count; index++)
+                {
+                    if (oldMD5Map.ContainsKey(currentMD5Keys[index]))
+                    {
+                        string currentMD5 = currentMD5Map[currentMD5Keys[index]];
+                        string oldMD5 = oldMD5Map[currentMD5Keys[index]];
+
+                        if (currentMD5 != oldMD5)
+                        {
+                            string targetPath = $"{patchsPath}/R{oldVersion.Resources}/ManagedAssets/{currentMD5Keys[index]}";
+                            string parentPath = targetPath.Substring(0, targetPath.LastIndexOf("/"));
+                            if (!Directory.Exists(parentPath))
+                            {   
+                                Directory.CreateDirectory(parentPath);
+                            }
+                            File.Copy($"{GetAssetsOutput()}/{currentMD5Keys[index]}", targetPath, true);
+                        }
+
+                    }
+                }
+
+                ZipUtility.Compress(tempAssets, $"{patchsPath}/R{oldVersion.Resources}/Patchs.zip");
+                Directory.Delete(tempAssets, true);
+            }
+        }
+
+        private static Dictionary<string, string> GetAssetsMD5(VersionData version)
+        {
+            string md5FilePath = $"{GetBuildModeTempPath()}/{version}/MD5.json";
+            FileInfo fileInfo = new FileInfo(md5FilePath);
+            System.Uri uri = new System.Uri(fileInfo.FullName);
+            UnityWebRequest webRequest = UnityWebRequest.Get(uri);
+            UnityWebRequestAsyncOperation requestAOp = webRequest.SendWebRequest();
+            while (requestAOp.isDone == false)
+            {
+            }
+            Dictionary<string, string> md5Map = null;
+            if (!(webRequest.result == UnityWebRequest.Result.ConnectionError) && !(webRequest.result == UnityWebRequest.Result.ProtocolError))
+            {
+                md5Map = JsonMapper.ToObject<Dictionary<string, string>>(webRequest.downloadHandler.text);
+            }
+            return md5Map;
+        }
     }
 }
 

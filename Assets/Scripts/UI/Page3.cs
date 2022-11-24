@@ -28,9 +28,7 @@ namespace Prefabs.UI
                 //    gameObject.transform.position = new Vector3(-5, 0, 0);
                 //});
 
-                ScenesManager.LoadAsyncTask loadAsyncTask = new ScenesManager.LoadAsyncTask("Scenes/Scene1");
-                loadAsyncTask.AddAdditive("Scenes/Scene2");
-                loadAsyncTask.AddAdditive("Scenes/Scene2");
+                ScenesManager.LoadAsyncTask loadAsyncTask = new ScenesManager.LoadAsyncTask("Scenes/Scene2");
                 loadAsyncTask.AddSceneDataHandler(new SceneUIHandler());
                 loadAsyncTask.finishCallback = delegate
                 {

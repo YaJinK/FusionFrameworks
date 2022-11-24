@@ -269,14 +269,14 @@ namespace Fusion.Frameworks.Scenes
 
         public void Load(string path, LoadSceneMode mode = LoadSceneMode.Single)
         {
+            string name = AssetsManager.Instance.GetAssetNameByPath(path);
+            AssetBundle assetBundle = AssetsManager.Instance.LoadAssetBundle(path);
+            SceneManager.LoadScene(name, mode);
             if (mode == LoadSceneMode.Single)
             {
                 UIManager.Instance.Clear();
                 AssetReferences.Instance.Clear(new string[] { AssetsConfig.GetAssetBundleName(path) });
             }
-            string name = AssetsManager.Instance.GetAssetNameByPath(path);
-            AssetBundle assetBundle = AssetsManager.Instance.LoadAssetBundle(path);
-            SceneManager.LoadScene(name, mode);
         }
 
         public void LoadAsync(string path, LoadSceneMode mode = LoadSceneMode.Single, Action<AsyncOperation> startCallback = null, Action finishCallback = null)
@@ -293,13 +293,13 @@ namespace Fusion.Frameworks.Scenes
         {
             if (mode == LoadSceneMode.Single)
             {
-                UIManager.Instance.Clear();
-                AssetReferences.Instance.Clear(new string[] { AssetsConfig.GetAssetBundleName(path) });
                 asyncHandler[path] = true;
                 Action originFinishCallback = finishCallback;
                 finishCallback = delegate
                 {
                     asyncHandler.Remove(path);
+                    UIManager.Instance.Clear();
+                    AssetReferences.Instance.Clear(new string[] { AssetsConfig.GetAssetBundleName(path) });
                     if (originFinishCallback != null)
                     {
                         originFinishCallback();

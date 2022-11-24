@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c6a7a87cfdeeb04abb7e40abf621f88, type: 3}
   m_Name: BuildSetting
   m_EditorClassIdentifier: 
+  buildMode: 0
   compressType: 256
   buildTargetType: 0
   initScene: {fileID: 0}
@@ -19,3 +20,4 @@ MonoBehaviour:
     large: 0
     middle: 0
     small: 1
+    resources: 4
