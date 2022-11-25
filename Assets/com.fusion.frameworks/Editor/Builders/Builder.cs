@@ -46,6 +46,7 @@ namespace Fusion.Frameworks.Editor
         {
             DLLPacker.Build();
             AssetsPacker.Build();
+            AssetsPacker.CopyAssetsToStreamingAssets();
         }
 
         [MenuItem("Build/BuildPlayer")]

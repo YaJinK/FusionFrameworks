@@ -158,15 +158,44 @@ namespace Fusion.Frameworks.Assets
 
         public void Clear(string[] ignoreList = null)
         {
+            Dictionary<string, int> ignoreMap = new Dictionary<string, int>();
+
+            if (ignoreList != null)
+            {
+                for (int index = 0; index < ignoreList.Length; index++)
+                {
+                    if (!ignoreMap.ContainsKey(ignoreList[index]))
+                    {
+                        ignoreMap[ignoreList[index]] = 1;
+                    } else
+                    {
+                        ignoreMap[ignoreList[index]]++;
+                    }
+                    string[] assetBundleDependencies = AssetsManager.AssetBundleManifest.GetAllDependencies(ignoreList[index]);
+                    for (int i = 0; i < assetBundleDependencies.Length; i++)
+                    {
+                        if (!ignoreMap.ContainsKey(assetBundleDependencies[i]))
+                        {
+                            ignoreMap[assetBundleDependencies[i]] = 1;
+                        }
+                        else
+                        {
+                            ignoreMap[assetBundleDependencies[i]]++;
+                        }
+                    }
+                }
+            }
+
+            
             List<AssetData> list = assetReferences.Values.ToList();
             foreach (AssetData data in list)
             {
-                if (!ignoreList.Contains(data.AssetBundle.name))
+                if (!ignoreMap.ContainsKey(data.AssetBundle.name))
                 {
                     ReleaseImmediate(data.AssetBundle, data.ReferenceCount);
                 } else
                 {
-                    data.Release(data.ReferenceCount);
+                    data.Release(data.ReferenceCount - ignoreMap[data.AssetBundle.name]);
                 }
             }
         }
