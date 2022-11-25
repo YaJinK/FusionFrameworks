@@ -27,15 +27,12 @@ namespace ILRuntime.Runtime.Generated
             FieldInfo field;
             Type[] args;
             Type type = typeof(Fusion.Frameworks.Scenes.ScenesManager.LoadAsyncTask);
-            args = new Type[]{typeof(System.String)};
-            method = type.GetMethod("AddAdditive", flag, null, args, null);
-            app.RegisterCLRMethodRedirection(method, AddAdditive_0);
             args = new Type[]{typeof(Fusion.Frameworks.Scenes.SceneDataHandler)};
             method = type.GetMethod("AddSceneDataHandler", flag, null, args, null);
-            app.RegisterCLRMethodRedirection(method, AddSceneDataHandler_1);
+            app.RegisterCLRMethodRedirection(method, AddSceneDataHandler_0);
             args = new Type[]{typeof(Fusion.Frameworks.Scenes.TransformData)};
             method = type.GetMethod("set_TransformData", flag, null, args, null);
-            app.RegisterCLRMethodRedirection(method, set_TransformData_2);
+            app.RegisterCLRMethodRedirection(method, set_TransformData_1);
 
             field = type.GetField("finishCallback", flag);
             app.RegisterCLRFieldGetter(field, get_finishCallback_0);
@@ -49,26 +46,7 @@ namespace ILRuntime.Runtime.Generated
         }
 
 
-        static StackObject* AddAdditive_0(ILIntepreter __intp, StackObject* __esp, AutoList __mStack, CLRMethod __method, bool isNewObj)
-        {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
-            StackObject* ptr_of_this_method;
-            StackObject* __ret = ILIntepreter.Minus(__esp, 2);
-
-            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            System.String @name = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
-            __intp.Free(ptr_of_this_method);
-
-            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
-            Fusion.Frameworks.Scenes.ScenesManager.LoadAsyncTask instance_of_this_method = (Fusion.Frameworks.Scenes.ScenesManager.LoadAsyncTask)typeof(Fusion.Frameworks.Scenes.ScenesManager.LoadAsyncTask).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
-            __intp.Free(ptr_of_this_method);
-
-            instance_of_this_method.AddAdditive(@name);
-
-            return __ret;
-        }
-
-        static StackObject* AddSceneDataHandler_1(ILIntepreter __intp, StackObject* __esp, AutoList __mStack, CLRMethod __method, bool isNewObj)
+        static StackObject* AddSceneDataHandler_0(ILIntepreter __intp, StackObject* __esp, AutoList __mStack, CLRMethod __method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -87,7 +65,7 @@ namespace ILRuntime.Runtime.Generated
             return __ret;
         }
 
-        static StackObject* set_TransformData_2(ILIntepreter __intp, StackObject* __esp, AutoList __mStack, CLRMethod __method, bool isNewObj)
+        static StackObject* set_TransformData_1(ILIntepreter __intp, StackObject* __esp, AutoList __mStack, CLRMethod __method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;

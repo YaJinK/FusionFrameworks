@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildMode: 0
   compressType: 256
-  buildTargetType: 0
+  buildTargetType: 5
   initScene: {fileID: 0}
   version:
     large: 0
     middle: 0
     small: 1
-    resources: 4
+    resources: 3

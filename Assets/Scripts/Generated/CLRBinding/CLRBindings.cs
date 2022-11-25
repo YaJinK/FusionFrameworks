@@ -29,9 +29,8 @@ namespace ILRuntime.Runtime.Generated
             Fusion_Frameworks_UI_UIObject_Binding.Register(app);
             Fusion_Frameworks_UI_UIUtility_Binding.Register(app);
             Fusion_Frameworks_UI_UIManager_Binding.Register(app);
-            Fusion_Frameworks_UI_UIData_Binding.Register(app);
-            UnityEngine_Debug_Binding.Register(app);
             Fusion_Frameworks_Assets_AssetsUtility_Binding.Register(app);
+            Fusion_Frameworks_UI_UIData_Binding.Register(app);
             UnityEngine_GameObject_Binding.Register(app);
             Fusion_Frameworks_Scenes_ScenesManager_Binding_LoadAsyncTask_Binding.Register(app);
             Fusion_Frameworks_Scenes_SceneUIHandler_Binding.Register(app);
