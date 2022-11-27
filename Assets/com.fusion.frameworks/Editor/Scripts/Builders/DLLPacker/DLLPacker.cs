@@ -1,5 +1,7 @@
 using Fusion.Frameworks.Assets.Editor;
 using Fusion.Frameworks.UI;
+using Fusion.Frameworks.Utilities;
+using ILRuntime.Runtime.Enviorment;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,6 +10,7 @@ using System.Text;
 using UnityEditor;
 using UnityEditor.Compilation;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Fusion.Frameworks.DynamicDLL.Editor
 {
@@ -55,16 +58,8 @@ namespace Fusion.Frameworks.DynamicDLL.Editor
         public static void GenerateBuildInAdapters()
         {
             string buildInAdapterPath = "Assets/com.fusion.frameworks/Runtime/Scripts/DLLManager/Adapters";
-            using (System.IO.StreamWriter sw = new System.IO.StreamWriter($"{buildInAdapterPath}/UIObjectAdapter.cs"))
-            {
-                sw.WriteLine(ILRuntime.Runtime.Enviorment.CrossBindingCodeGenerator.GenerateCrossBindingAdapterCode(typeof(UIObject), "Fusion.Frameworks.DynamicDLL.Adapters"));
-            }
-
-            using (System.IO.StreamWriter sw = new System.IO.StreamWriter($"{buildInAdapterPath}/UIDataAdapter.cs"))
-            {
-                sw.WriteLine(ILRuntime.Runtime.Enviorment.CrossBindingCodeGenerator.GenerateCrossBindingAdapterCode(typeof(UIData), "Fusion.Frameworks.DynamicDLL.Adapters"));
-            }
-
+            IOUtility.Write($"{buildInAdapterPath}/UIObjectAdapter.cs", CrossBindingCodeGenerator.GenerateCrossBindingAdapterCode(typeof(UIObject), "Fusion.Frameworks.DynamicDLL.Adapters"));
+            IOUtility.Write($"{buildInAdapterPath}/UIDataAdapter.cs", CrossBindingCodeGenerator.GenerateCrossBindingAdapterCode(typeof(UIData), "Fusion.Frameworks.DynamicDLL.Adapters"));
             AssetDatabase.Refresh();
         }
 
@@ -98,10 +93,7 @@ namespace Fusion.Frameworks.DynamicDLL.Editor
                     Type classType = Type.GetType(className);
 
                     string namePrefix = classNameAndAssemblyName[0].Substring(classNameAndAssemblyName[0].LastIndexOf(".") + 1);
-                    using (System.IO.StreamWriter sw = new System.IO.StreamWriter($"{customAdapterPath}/{namePrefix}Adapter.cs"))
-                    {
-                        sw.WriteLine(ILRuntime.Runtime.Enviorment.CrossBindingCodeGenerator.GenerateCrossBindingAdapterCode(classType, "Fusion.Frameworks.DynamicDLL.Adapters.Custom"));
-                    }
+                    IOUtility.Write($"{customAdapterPath}/{namePrefix}Adapter.cs", CrossBindingCodeGenerator.GenerateCrossBindingAdapterCode(classType, "Fusion.Frameworks.DynamicDLL.Adapters.Custom"));
                     adapters.Append(@$"
             appDomain.RegisterCrossBindingAdaptor(new {namePrefix}Adapter());");
                 }
@@ -151,10 +143,8 @@ namespace Fusion.Frameworks.DynamicDLL
         }");
             dllCustomBinder.AppendLine("    }");
             dllCustomBinder.AppendLine("}");
-            using (System.IO.StreamWriter sw = new System.IO.StreamWriter($"{customGeneratedPath}/DLLCustomBinder.cs"))
-            {
-                sw.WriteLine(dllCustomBinder);
-            }
+            IOUtility.Write($"{customGeneratedPath}/DLLCustomBinder.cs", dllCustomBinder.ToString());
+
             AssetDatabase.Refresh();
         }
 

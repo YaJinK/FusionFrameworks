@@ -406,12 +406,8 @@ namespace Fusion.Frameworks.Assets.Editor
         private static void GenerateConfigFile()
         {
             string jsonFileName = GetAssetsOutput() + "/AssetBundleConfig.json";
-            FileStream jsonFileStream = File.Open(jsonFileName, FileMode.Create);
-            StreamWriter jsonFileSW = new StreamWriter(jsonFileStream);
             string jsonStr = JsonMapper.ToJson(assetBundlesNameMap);
-            jsonFileSW.Write(jsonStr);
-            jsonFileSW.Close();
-            jsonFileStream.Close();
+            IOUtility.Write(jsonFileName, jsonStr);
         }
 
         private static void DeleteManifest(string path)
@@ -436,12 +432,8 @@ namespace Fusion.Frameworks.Assets.Editor
         private static void GenerateVersionFile()
         {
             string jsonFileName = $"{GetAssetsOutput()}/Version.json";
-            FileStream jsonFileStream = File.Open(jsonFileName, FileMode.Create);
-            StreamWriter jsonFileSW = new StreamWriter(jsonFileStream);
             string jsonStr = JsonMapper.ToJson(Builder.BuildSetting.version);
-            jsonFileSW.Write(jsonStr);
-            jsonFileSW.Close();
-            jsonFileStream.Close();
+            IOUtility.Write(jsonFileName, jsonStr);
         }
 
         [MenuItem("AssetsManager/CopyAssetsToStreamingAssets")]
@@ -512,12 +504,8 @@ namespace Fusion.Frameworks.Assets.Editor
             filesCollecter(output);
 
             string jsonFileName = GetVersionTempPath() + "/MD5.json";
-            FileStream jsonFileStream = File.Open(jsonFileName, FileMode.Create);
-            StreamWriter jsonFileSW = new StreamWriter(jsonFileStream);
             string jsonStr = JsonMapper.ToJson(md5Map);
-            jsonFileSW.Write(jsonStr);
-            jsonFileSW.Close();
-            jsonFileStream.Close();
+            IOUtility.Write(jsonFileName, jsonStr);
         }
 
         private static void GeneratePatchs()
@@ -580,7 +568,6 @@ namespace Fusion.Frameworks.Assets.Editor
                             }
                             File.Copy($"{GetAssetsOutput()}/{currentMD5Keys[index]}", targetPath, true);
                         }
-
                     }
                 }
 
@@ -592,19 +579,9 @@ namespace Fusion.Frameworks.Assets.Editor
         private static Dictionary<string, string> GetAssetsMD5(VersionData version)
         {
             string md5FilePath = $"{GetBuildModeTempPath()}/{version}/MD5.json";
-            FileInfo fileInfo = new FileInfo(md5FilePath);
-            System.Uri uri = new System.Uri(fileInfo.FullName);
-            UnityWebRequest webRequest = UnityWebRequest.Get(uri);
-            UnityWebRequestAsyncOperation requestAOp = webRequest.SendWebRequest();
-            while (requestAOp.isDone == false)
-            {
-            }
-            Dictionary<string, string> md5Map = null;
-            if (!(webRequest.result == UnityWebRequest.Result.ConnectionError) && !(webRequest.result == UnityWebRequest.Result.ProtocolError))
-            {
-                md5Map = JsonMapper.ToObject<Dictionary<string, string>>(webRequest.downloadHandler.text);
-            }
-            return md5Map;
+
+            string md5Str = IOUtility.Read(md5FilePath);
+            return md5Str != null ? JsonMapper.ToObject<Dictionary<string, string>>(md5Str) : null;
         }
     }
 }
