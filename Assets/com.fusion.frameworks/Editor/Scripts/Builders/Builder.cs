@@ -44,6 +44,7 @@ namespace Fusion.Frameworks.Editor
         [MenuItem("Build/BuildAssets")]
         public static void BuildAssets()
         {
+            Excel.Editor.ExcelConverter.Build();
             DLLPacker.Build();
             AssetsPacker.Build();
             AssetsPacker.CopyAssetsToStreamingAssets();
