@@ -1,7 +1,7 @@
 using Fusion.Frameworks.Assets;
+using Fusion.Frameworks.DataStorages;
 using Fusion.Frameworks.UI;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Prefabs.UI
 {
@@ -43,10 +43,10 @@ namespace Prefabs.UI
                 UIData data = new UIData();
                 UIManager.Instance.Launch("Prefabs/UI/Page3", data);
             });
-
+            
             GameObject image = UIUtility.Find(gameObject, "Image");
-            Page2Data page2Data = data as Page2Data;
-            AssetsUtility.SetSprite(image, page2Data.spriteName);
+            TestTable table = TestTableStorage.Get(2);
+            AssetsUtility.SetSprite(image, table.name);
         }
     }
 }

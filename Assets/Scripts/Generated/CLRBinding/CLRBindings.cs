@@ -38,6 +38,11 @@ namespace ILRuntime.Runtime.Generated
             Fusion_Frameworks_Scenes_ScenesManager_Binding.Register(app);
             UnityEngine_Vector3_Binding.Register(app);
             UnityEngine_Transform_Binding.Register(app);
+            System_Int32_Binding.Register(app);
+            System_Collections_Generic_Dictionary_2_String_ILTypeInstance_Binding.Register(app);
+            Fusion_Frameworks_Assets_AssetsManager_Binding.Register(app);
+            UnityEngine_TextAsset_Binding.Register(app);
+            LitJson_JsonMapper_Binding.Register(app);
         }
 
         /// <summary>

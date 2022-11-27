@@ -32,6 +32,9 @@ namespace ILRuntime.Runtime.Generated
             args = new Type[]{typeof(System.String), typeof(UnityEngine.GameObject), typeof(System.Boolean), typeof(System.Action<UnityEngine.GameObject>)};
             method = type.GetMethod("CreateGameObjectAsync", flag, null, args, null);
             app.RegisterCLRMethodRedirection(method, CreateGameObjectAsync_1);
+            args = new Type[]{typeof(System.String)};
+            method = type.GetMethod("Release", flag, null, args, null);
+            app.RegisterCLRMethodRedirection(method, Release_2);
 
 
         }
@@ -80,6 +83,22 @@ namespace ILRuntime.Runtime.Generated
 
 
             Fusion.Frameworks.Assets.AssetsUtility.CreateGameObjectAsync(@path, @parent, @worldPositionStays, @finishCallback);
+
+            return __ret;
+        }
+
+        static StackObject* Release_2(ILIntepreter __intp, StackObject* __esp, AutoList __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 1);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            System.String @path = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
+            __intp.Free(ptr_of_this_method);
+
+
+            Fusion.Frameworks.Assets.AssetsUtility.Release(@path);
 
             return __ret;
         }

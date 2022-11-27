@@ -24,9 +24,7 @@ namespace Prefabs.UI
             GameObject goBtn = UIUtility.Find(gameObject, "GoBtn");
             UIUtility.RegisterButtonAction(goBtn, delegate ()
             {
-                Page2Data page2Data = new Page2Data();
-                page2Data.spriteName = "Sprites/Equips/1";
-                UIManager.Instance.Launch("Prefabs/UI/Page2", page2Data);
+                UIManager.Instance.Launch("Prefabs/UI/Page2");
             });
 
         }
