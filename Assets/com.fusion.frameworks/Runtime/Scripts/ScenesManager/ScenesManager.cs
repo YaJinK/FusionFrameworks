@@ -174,6 +174,7 @@ namespace Fusion.Frameworks.Scenes
 
             public void Update()
             {
+#if FUSION_ASSETBUNDLE || !UNITY_EDITOR
                 if (loadAsyncTask.IsScheduling)
                 {
                     bool currentIsDone = true;
@@ -202,7 +203,8 @@ namespace Fusion.Frameworks.Scenes
                                 float additiveProgress = additiveSceneData.asyncOperation.progress;
                                 currentWeight += additiveProgress * additiveSceneData.weight;
                                 currentIsDone = currentIsDone && additiveSceneData.asyncOperation.isDone;
-                            } else
+                            }
+                            else
                             {
                                 currentIsDone = false;
                             }
@@ -226,6 +228,14 @@ namespace Fusion.Frameworks.Scenes
                         progress = Mathf.SmoothStep(oldProgress, newProgress, Time.unscaledDeltaTime * 50);
                     }
                 }
+#else
+                progress += 0.1f;
+                if (progress >= 1)
+                {
+                    isDone = true;
+                    progress = 1;
+                }
+#endif
             }
         }
 
@@ -270,7 +280,9 @@ namespace Fusion.Frameworks.Scenes
         public void Load(string path, LoadSceneMode mode = LoadSceneMode.Single)
         {
             string name = AssetsManager.Instance.GetAssetNameByPath(path);
-            AssetBundle assetBundle = AssetsManager.Instance.LoadAssetBundle(path);
+#if FUSION_ASSETBUNDLE || !UNITY_EDITOR
+            AssetsManager.Instance.LoadAssetBundle(path);
+#endif
             SceneManager.LoadScene(name, mode);
             if (mode == LoadSceneMode.Single)
             {
@@ -281,12 +293,24 @@ namespace Fusion.Frameworks.Scenes
 
         public void LoadAsync(string path, LoadSceneMode mode = LoadSceneMode.Single, Action<AsyncOperation> startCallback = null, Action finishCallback = null)
         {
+#if FUSION_ASSETBUNDLE || !UNITY_EDITOR
             if (asyncHandler.ContainsKey(path))
             {
                 return;
             }
             
             StartCoroutine(LoadAsyncCoroutine(path, mode, startCallback, finishCallback));
+#else
+            if (startCallback != null)
+            {
+                startCallback(null);
+            }
+            Load(path, mode);
+            if (finishCallback != null)
+            {
+                finishCallback();
+            }
+#endif
         }
 
         private IEnumerator LoadAsyncCoroutine(string path, LoadSceneMode mode = LoadSceneMode.Single, Action<AsyncOperation> startCallback = null, Action finishCallback = null)

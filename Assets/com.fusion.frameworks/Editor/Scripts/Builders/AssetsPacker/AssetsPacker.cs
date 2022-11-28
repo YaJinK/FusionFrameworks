@@ -55,6 +55,18 @@ namespace Fusion.Frameworks.Assets.Editor
             AssetDatabase.Refresh();
         }
 
+        [MenuItem("AssetsManager/SwichEditorAssetLoadType/AssetDatabase")]
+        private static void SwichEditorAssetLoadTypeToADB()
+        {
+            Builder.DeleteScriptingDefineSymbol("FUSION_ASSETBUNDLE");
+        }
+
+        [MenuItem("AssetsManager/SwichEditorAssetLoadType/AssetBundle")]
+        private static void SwichEditorAssetLoadTypeToAB()
+        {
+            Builder.AppendScriptingDefineSymbol("FUSION_ASSETBUNDLE");
+        }
+
         [MenuItem("AssetsManager/Pack")]
         private static void Pack()
         {

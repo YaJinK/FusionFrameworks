@@ -147,12 +147,18 @@ namespace Fusion.Frameworks.Assets
         /// <param name="gameObject"></param>
         public static void Release(GameObject gameObject)
         {
+#if FUSION_ASSETBUNDLE || !UNITY_EDITOR
             GameObjectAssetRecorder[] assetRecorders = gameObject.GetComponentsInChildren<GameObjectAssetRecorder>(true);
             for (int index = 0; index < assetRecorders.Length; index++)
             {
                 assetRecorders[index].Release();
             }
             UnityEngine.Object.Destroy(gameObject);
+#else
+            UnityEngine.Object.Destroy(gameObject);
+            Resources.UnloadUnusedAssets();
+            GC.Collect();
+#endif
         }
 
         /// <summary>
@@ -161,12 +167,18 @@ namespace Fusion.Frameworks.Assets
         /// <param name="gameObject"></param>
         public static void ReleaseImmediate(GameObject gameObject)
         {
+#if FUSION_ASSETBUNDLE || !UNITY_EDITOR
             GameObjectAssetRecorder[] assetRecorders = gameObject.GetComponentsInChildren<GameObjectAssetRecorder>(true);
             for (int index = 0; index < assetRecorders.Length; index++)
             {
                 assetRecorders[index].ReleaseImmediate();
             }
             UnityEngine.Object.Destroy(gameObject);
+#else
+            UnityEngine.Object.Destroy(gameObject);
+            Resources.UnloadUnusedAssets();
+            GC.Collect();
+#endif
         }
 
         /// <summary>
@@ -175,8 +187,13 @@ namespace Fusion.Frameworks.Assets
         /// <param name="path">资源路径</param>
         public static void Release(string path)
         {
+#if FUSION_ASSETBUNDLE || !UNITY_EDITOR
             string assetBundleName = AssetsConfig.GetAssetBundleName(path);
             AssetReferences.Instance.Release(assetBundleName);
+#else
+            Resources.UnloadUnusedAssets();
+            GC.Collect();
+#endif
         }
 
         /// <summary>
@@ -185,8 +202,13 @@ namespace Fusion.Frameworks.Assets
         /// <param name="path">资源路径</param>
         public static void ReleaseImmediate(string path)
         {
+#if FUSION_ASSETBUNDLE || !UNITY_EDITOR
             string assetBundleName = AssetsConfig.GetAssetBundleName(path);
             AssetReferences.Instance.ReleaseImmediate(assetBundleName);
+#else
+            Resources.UnloadUnusedAssets();
+            GC.Collect();
+#endif
         }
     }
 }

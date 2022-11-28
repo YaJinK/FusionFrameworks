@@ -41,17 +41,19 @@ namespace Fusion.Frameworks.Assets
             {
                 assetRecords[assetBundleName] = new AssetRecord(assetBundleName);
             }
-
-            string[] assetBundleDependencies = AssetsManager.AssetBundleManifest.GetAllDependencies(assetBundleName);
-            for (int i = 0; i < assetBundleDependencies.Length; i++)
+            if (AssetsManager.AssetBundleManifest != null)
             {
-                if (assetRecords.ContainsKey(assetBundleDependencies[i]))
+                string[] assetBundleDependencies = AssetsManager.AssetBundleManifest.GetAllDependencies(assetBundleName);
+                for (int i = 0; i < assetBundleDependencies.Length; i++)
                 {
-                    assetRecords[assetBundleDependencies[i]].Record();
-                }
-                else
-                {
-                    assetRecords[assetBundleDependencies[i]] = new AssetRecord(assetBundleDependencies[i]);
+                    if (assetRecords.ContainsKey(assetBundleDependencies[i]))
+                    {
+                        assetRecords[assetBundleDependencies[i]].Record();
+                    }
+                    else
+                    {
+                        assetRecords[assetBundleDependencies[i]] = new AssetRecord(assetBundleDependencies[i]);
+                    }
                 }
             }
         }

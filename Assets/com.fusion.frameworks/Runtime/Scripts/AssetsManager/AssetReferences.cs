@@ -171,21 +171,23 @@ namespace Fusion.Frameworks.Assets
                     {
                         ignoreMap[ignoreList[index]]++;
                     }
-                    string[] assetBundleDependencies = AssetsManager.AssetBundleManifest.GetAllDependencies(ignoreList[index]);
-                    for (int i = 0; i < assetBundleDependencies.Length; i++)
+                    if (AssetsManager.AssetBundleManifest != null)
                     {
-                        if (!ignoreMap.ContainsKey(assetBundleDependencies[i]))
+                        string[] assetBundleDependencies = AssetsManager.AssetBundleManifest.GetAllDependencies(ignoreList[index]);
+                        for (int i = 0; i < assetBundleDependencies.Length; i++)
                         {
-                            ignoreMap[assetBundleDependencies[i]] = 1;
-                        }
-                        else
-                        {
-                            ignoreMap[assetBundleDependencies[i]]++;
+                            if (!ignoreMap.ContainsKey(assetBundleDependencies[i]))
+                            {
+                                ignoreMap[assetBundleDependencies[i]] = 1;
+                            }
+                            else
+                            {
+                                ignoreMap[assetBundleDependencies[i]]++;
+                            }
                         }
                     }
                 }
             }
-
             
             List<AssetData> list = assetReferences.Values.ToList();
             foreach (AssetData data in list)

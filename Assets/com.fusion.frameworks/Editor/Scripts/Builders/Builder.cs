@@ -99,6 +99,30 @@ namespace Fusion.Frameworks.Editor
             BuildTarget buildTarget = buildSetting.buildTargetType == BuildTargetType.UseCurrentTarget ? EditorUserBuildSettings.activeBuildTarget : (BuildTarget)buildSetting.buildTargetType;
             return buildTarget;
         }
+
+        public static void AppendScriptingDefineSymbol(string scriptingDefineSymbol)
+        {
+            BuildTargetGroup buildTargetGroup = BuildPipeline.GetBuildTargetGroup(GetCurrentBuildTarget());
+
+            string scriptingDefineSymbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup);
+            if (!scriptingDefineSymbols.Contains(scriptingDefineSymbol)) 
+            {
+                scriptingDefineSymbols = $"{scriptingDefineSymbols};{scriptingDefineSymbol}";
+                PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, scriptingDefineSymbols);
+            }
+        }
+
+        public static void DeleteScriptingDefineSymbol(string scriptingDefineSymbol)
+        {
+            BuildTargetGroup buildTargetGroup = BuildPipeline.GetBuildTargetGroup(GetCurrentBuildTarget());
+
+            string scriptingDefineSymbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup);
+            if (scriptingDefineSymbols.Contains(scriptingDefineSymbol))
+            {
+                scriptingDefineSymbols = scriptingDefineSymbols.Replace(scriptingDefineSymbol, "");
+                PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, scriptingDefineSymbols);
+            }
+        }
     }
 }
 
