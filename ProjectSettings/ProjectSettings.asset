@@ -716,7 +716,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLDecompressionFallback: 0
   scriptingDefineSymbols:
-    Standalone: 
+    Standalone: FUSION_ASSETBUNDLE;FUSION_DYNAMIC_DLL
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

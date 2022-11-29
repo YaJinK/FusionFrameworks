@@ -26,6 +26,11 @@ namespace ILRuntime.Runtime.Generated
         /// </summary>
         public static void Initialize(ILRuntime.Runtime.Enviorment.AppDomain app)
         {
+            Fusion_Frameworks_DynamicDLL_Mono_DLLMonoBase_Binding.Register(app);
+            UnityEngine_Debug_Binding.Register(app);
+            UnityEngine_MonoBehaviour_Binding.Register(app);
+            UnityEngine_WaitForSeconds_Binding.Register(app);
+            System_NotSupportedException_Binding.Register(app);
             Fusion_Frameworks_UI_UIObject_Binding.Register(app);
             Fusion_Frameworks_UI_UIUtility_Binding.Register(app);
             Fusion_Frameworks_UI_UIManager_Binding.Register(app);
