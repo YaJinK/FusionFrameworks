@@ -15,7 +15,7 @@ namespace Fusion.Frameworks.Excel.Editor
 {
     public class ExcelConverter
     {
-        [MenuItem("Excels/Convert")]
+        [MenuItem("Excels/Build")]
         public static void Build()
         {
             if (!Directory.Exists("Excels"))

@@ -1,8 +1,11 @@
 using Fusion.Frameworks.Assets.Editor;
+using Fusion.Frameworks.DynamicDLL.Mono;
+using Fusion.Frameworks.Editor;
 using Fusion.Frameworks.UI;
 using Fusion.Frameworks.Utilities;
 using ILRuntime.Runtime.Enviorment;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -38,7 +41,19 @@ namespace Fusion.Frameworks.DynamicDLL.Editor
             }
         }
 
-        [MenuItem("DLLManager/GenerateCLRBinding")]
+        [MenuItem("DLLManager/SwichDynamicDLLState/Disabled", false, 501)]
+        private static void SwichDynamicDLLEnabled()
+        {
+            Builder.DeleteScriptingDefineSymbol("FUSION_DYNAMIC_DLL");
+        }
+
+        [MenuItem("DLLManager/SwichDynamicDLLState/Enabled", false, 500)]
+        private static void SwichDynamicDLLDisabled()
+        {
+            Builder.AppendScriptingDefineSymbol("FUSION_DYNAMIC_DLL");
+        }
+
+        [MenuItem("DLLManager/GenerateCLRBinding", false, 200)]
         static void GenerateCLRBindingByAnalysis()
         {
             ILRuntime.Runtime.Enviorment.AppDomain appDomain = new ILRuntime.Runtime.Enviorment.AppDomain();
@@ -54,16 +69,17 @@ namespace Fusion.Frameworks.DynamicDLL.Editor
             AssetDatabase.Refresh();
         }
 
-        [MenuItem("DLLManager/GenerateBuildInAdapters")]
+        [MenuItem("DLLManager/GenerateBuildInAdapters", false, 200)]
         public static void GenerateBuildInAdapters()
         {
             string buildInAdapterPath = "Assets/com.fusion.frameworks/Runtime/Scripts/DLLManager/Adapters";
             IOUtility.Write($"{buildInAdapterPath}/UIObjectAdapter.cs", CrossBindingCodeGenerator.GenerateCrossBindingAdapterCode(typeof(UIObject), "Fusion.Frameworks.DynamicDLL.Adapters"));
             IOUtility.Write($"{buildInAdapterPath}/UIDataAdapter.cs", CrossBindingCodeGenerator.GenerateCrossBindingAdapterCode(typeof(UIData), "Fusion.Frameworks.DynamicDLL.Adapters"));
+            IOUtility.Write($"{buildInAdapterPath}/DLLMonoBaseAdapter.cs", CrossBindingCodeGenerator.GenerateCrossBindingAdapterCode(typeof(DLLMonoBase), "Fusion.Frameworks.DynamicDLL.Adapters"));
             AssetDatabase.Refresh();
         }
 
-        [MenuItem("DLLManager/GenerateCustomBinder")]
+        [MenuItem("DLLManager/GenerateCustomBinder", false, 200)]
         public static void GenerateCustomBinder()
         {
             if (AssetDatabase.IsValidFolder(customAdapterPath))
@@ -148,7 +164,7 @@ namespace Fusion.Frameworks.DynamicDLL
             AssetDatabase.Refresh();
         }
 
-        [MenuItem("DLLManager/Build")]
+        [MenuItem("DLLManager/Build", false, 2000)]
         public static void Build()
         {
             if (dllSetting.scriptsForPack == null)

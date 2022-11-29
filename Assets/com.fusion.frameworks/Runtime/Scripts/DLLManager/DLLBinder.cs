@@ -15,7 +15,9 @@ namespace Fusion.Frameworks.DynamicDLL
         public virtual void RegisterAdapters()
         {
             appDomain.RegisterCrossBindingAdaptor(new UIObjectAdapter());
-            appDomain.RegisterCrossBindingAdaptor(new UIDataAdapter());
+            appDomain.RegisterCrossBindingAdaptor(new UIDataAdapter()); 
+            appDomain.RegisterCrossBindingAdaptor(new DLLMonoBaseAdapter()); 
+            appDomain.RegisterCrossBindingAdaptor(new CoroutineAdapter());
         }
 
         public virtual void RegisterMethodDelegate()

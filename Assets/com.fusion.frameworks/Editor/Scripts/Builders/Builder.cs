@@ -34,23 +34,29 @@ namespace Fusion.Frameworks.Editor
             }
         }
 
-        [MenuItem("Build/BuildAll")]
+        [MenuItem("Build/Build", false, 2002)]
         public static void BuildAll()
         {
             BuildAssets();
             BuildPlayer();
         }
 
-        [MenuItem("Build/BuildAssets")]
+        [MenuItem("Build/BuildAssets", false, 1000)]
         public static void BuildAssets()
+        {
+            BuildDynamic();
+            AssetsPacker.CopyAssetsToStreamingAssets();
+        }
+
+        [MenuItem("Build/BuildDynamic", false, 2001)]
+        public static void BuildDynamic()
         {
             Excel.Editor.ExcelConverter.Build();
             DLLPacker.Build();
             AssetsPacker.Build();
-            AssetsPacker.CopyAssetsToStreamingAssets();
         }
 
-        [MenuItem("Build/BuildPlayer")]
+        [MenuItem("Build/BuildPlayer", false, 1001)]
         public static void BuildPlayer()
         {
             DLLPacker.BackupCSharp();
@@ -110,6 +116,9 @@ namespace Fusion.Frameworks.Editor
                 scriptingDefineSymbols = $"{scriptingDefineSymbols};{scriptingDefineSymbol}";
                 PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, scriptingDefineSymbols);
             }
+            Debug.Log(scriptingDefineSymbol);
+            Debug.Log(scriptingDefineSymbols);
+            Debug.Log(PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup));
         }
 
         public static void DeleteScriptingDefineSymbol(string scriptingDefineSymbol)
@@ -122,6 +131,8 @@ namespace Fusion.Frameworks.Editor
                 scriptingDefineSymbols = scriptingDefineSymbols.Replace(scriptingDefineSymbol, "");
                 PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, scriptingDefineSymbols);
             }
+            Debug.Log(PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup));
+
         }
     }
 }

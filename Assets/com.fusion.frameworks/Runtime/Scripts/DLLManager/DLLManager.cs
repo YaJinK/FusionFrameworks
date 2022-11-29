@@ -2,7 +2,6 @@ using UnityEngine;
 using Fusion.Frameworks.Assets;
 using System.IO;
 using System;
-using ILRuntime.Runtime.Enviorment;
 
 namespace Fusion.Frameworks.DynamicDLL
 {
@@ -21,6 +20,7 @@ namespace Fusion.Frameworks.DynamicDLL
                     instance = dllManagerObject.AddComponent<DLLManager>();
                     DontDestroyOnLoad(dllManagerObject);
 
+#if FUSION_DYNAMIC_DLL
                     appDomain = new ILRuntime.Runtime.Enviorment.AppDomain();
 
                     TextAsset textAsset = AssetsManager.Instance.Load<TextAsset>("Scripts/Extra");
@@ -31,14 +31,22 @@ namespace Fusion.Frameworks.DynamicDLL
                     Type classType = Type.GetType("Fusion.Frameworks.DynamicDLL.DLLCustomBinder, Assembly-CSharp");
                     DLLBinder dllBinder = classType != null ? (DLLBinder)Activator.CreateInstance(classType, appDomain) : new DLLBinder(appDomain);
                     dllBinder.Register();
+#endif
                 }
                 return instance;
             }
         }
 
-        public T Instantiate<T>(string type, params object[] objects)
+        public T Instantiate<T>(string className, params object[] objects)
         {
-            return appDomain.Instantiate<T>(type, objects);
+#if FUSION_DYNAMIC_DLL
+            Debug.Log(className);
+            return appDomain.Instantiate<T>(className, objects);
+#else
+            Type classType = Type.GetType($"{className}, Assembly-CSharp");
+            return classType != null ? (T)Activator.CreateInstance(classType, objects) : default(T);
+#endif
+
         }
     }
 }

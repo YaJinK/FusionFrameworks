@@ -40,7 +40,7 @@ namespace Fusion.Frameworks.Assets.Editor
 
         public static string FilePathPrefix { get => filePathPrefix; }
 
-        [MenuItem("AssetsManager/CreateGameAssetsFolder")]
+        [MenuItem("AssetsManager/CreateGameAssetsFolder", false, 200)]
         private static void CreateGameAssetsFolder()
         {
             int divideIndex = filePathPrefix.IndexOf("/");
@@ -55,19 +55,32 @@ namespace Fusion.Frameworks.Assets.Editor
             AssetDatabase.Refresh();
         }
 
-        [MenuItem("AssetsManager/SwichEditorAssetLoadType/AssetDatabase")]
+        [MenuItem("AssetsManager/CopyAssetsToStreamingAssets", false, 205)]
+        public static void CopyAssetsToStreamingAssets()
+        {
+            if (Directory.Exists($"{Application.streamingAssetsPath}/ManagedAssets"))
+            {
+                Directory.Delete($"{Application.streamingAssetsPath}/ManagedAssets", true);
+            }
+            string output = GetAssetsOutput();
+            if (Directory.Exists(output))
+            {
+                CopyDirectoryToStreamingAssets(output);
+            }
+        }
+
+        [MenuItem("AssetsManager/SwichEditorAssetLoadType/AssetDatabase", false, 500)]
         private static void SwichEditorAssetLoadTypeToADB()
         {
             Builder.DeleteScriptingDefineSymbol("FUSION_ASSETBUNDLE");
         }
 
-        [MenuItem("AssetsManager/SwichEditorAssetLoadType/AssetBundle")]
+        [MenuItem("AssetsManager/SwichEditorAssetLoadType/AssetBundle", false, 500)]
         private static void SwichEditorAssetLoadTypeToAB()
         {
             Builder.AppendScriptingDefineSymbol("FUSION_ASSETBUNDLE");
         }
 
-        [MenuItem("AssetsManager/Pack")]
         private static void Pack()
         {
             string outputDir = GetAssetsOutput();
@@ -84,7 +97,7 @@ namespace Fusion.Frameworks.Assets.Editor
             AssetDatabase.Refresh();
         }
 
-        [MenuItem("AssetsManager/ClearAssetBundleName")]
+        [MenuItem("AssetsManager/ClearAssetBundleName", false, 201)]
         private static void ClearAssetBundleName()
         {
             ClearAssetBundleName(Application.dataPath.Substring(0, Application.dataPath.LastIndexOf("/") + 1) + filePathPrefix);
@@ -92,7 +105,7 @@ namespace Fusion.Frameworks.Assets.Editor
             AssetDatabase.Refresh();
         }
 
-        [MenuItem("AssetsManager/Build")]
+        [MenuItem("AssetsManager/Build", false, 2000)]
         public static void Build()
         {
             Pack();
@@ -448,19 +461,6 @@ namespace Fusion.Frameworks.Assets.Editor
             IOUtility.Write(jsonFileName, jsonStr);
         }
 
-        [MenuItem("AssetsManager/CopyAssetsToStreamingAssets")]
-        public static void CopyAssetsToStreamingAssets()
-        {
-            if (Directory.Exists($"{Application.streamingAssetsPath}/ManagedAssets"))
-            {
-                Directory.Delete($"{Application.streamingAssetsPath}/ManagedAssets", true);
-            }
-            string output = GetAssetsOutput();
-            if (Directory.Exists(output))
-            {
-                CopyDirectoryToStreamingAssets(output);
-            }
-        }
 
         private static void CopyDirectoryToStreamingAssets(string path)
         {
