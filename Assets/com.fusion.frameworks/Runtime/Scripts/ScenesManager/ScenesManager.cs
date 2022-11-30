@@ -1,8 +1,10 @@
 ﻿using Fusion.Frameworks.Assets;
+using Fusion.Frameworks.Timer;
 using Fusion.Frameworks.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -279,6 +281,7 @@ namespace Fusion.Frameworks.Scenes
 
         public void Load(string path, LoadSceneMode mode = LoadSceneMode.Single)
         {
+            TimerManager.Instance.Clear();
             string name = AssetsManager.Instance.GetAssetNameByPath(path);
 #if FUSION_ASSETBUNDLE || !UNITY_EDITOR
             AssetsManager.Instance.LoadAssetBundle(path);
@@ -293,6 +296,7 @@ namespace Fusion.Frameworks.Scenes
 
         public void LoadAsync(string path, LoadSceneMode mode = LoadSceneMode.Single, Action<AsyncOperation> startCallback = null, Action finishCallback = null)
         {
+            TimerManager.Instance.Clear();
 #if FUSION_ASSETBUNDLE || !UNITY_EDITOR
             if (asyncHandler.ContainsKey(path))
             {
