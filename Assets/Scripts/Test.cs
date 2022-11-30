@@ -1,6 +1,8 @@
 using Fusion.Frameworks.DynamicDLL;
 using Fusion.Frameworks.Scenes;
+using Fusion.Frameworks.Timer;
 using Fusion.Frameworks.UI;
+using System;
 using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -37,6 +39,7 @@ public class Test : MonoBehaviour
         //    cubeInstance.transform.position = Vector3.zero;
         //});
         //UIManager.Instance.Launch("Prefabs/UI/Page3", new UIData { LaunchMode = UILaunchMode.SingleTop });
+        
         ScenesManager.LoadAsyncTask loadAsyncTask = new ScenesManager.LoadAsyncTask("Scenes/Scene1");
         loadAsyncTask.finishCallback = delegate
         {
