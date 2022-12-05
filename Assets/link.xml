@@ -1,7 +1,0 @@
-<linker>
-    <assembly fullname="UnityEngine" preserve="all"/>
-    <assembly fullname="Fusion.Frameworks.Runtime" preserve="all"/>
-    <assembly fullname="Assembly-CSharp">
-        <namespace fullname="Fusion.Frameworks.DynamicDLL" preserve="all"/>
-    </assembly> 
-</linker>
