@@ -40,21 +40,6 @@ namespace Fusion.Frameworks.Assets.Editor
 
         public static string FilePathPrefix { get => filePathPrefix; }
 
-        [MenuItem("AssetsManager/CreateGameAssetsFolder", false, 200)]
-        private static void CreateGameAssetsFolder()
-        {
-            int divideIndex = filePathPrefix.IndexOf("/");
-            if (divideIndex != -1)
-            {
-                if (!AssetDatabase.IsValidFolder(filePathPrefix))
-                {
-                    AssetDatabase.CreateFolder("Assets", filePathPrefix.Substring(divideIndex + 1));
-                }
-            }
-
-            AssetDatabase.Refresh();
-        }
-
         [MenuItem("AssetsManager/CopyAssetsToStreamingAssets", false, 205)]
         public static void CopyAssetsToStreamingAssets()
         {
@@ -89,7 +74,6 @@ namespace Fusion.Frameworks.Assets.Editor
                 Directory.CreateDirectory(outputDir);
             }
             assetBundlesNameMap.Clear();
-            CreateGameAssetsFolder();
             PackFolder(Application.dataPath.Substring(0, Application.dataPath.LastIndexOf("/") + 1) + filePathPrefix);
             GenerateConfigFile();
             GenerateVersionFile();

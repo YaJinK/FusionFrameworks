@@ -1,7 +1,7 @@
 {
   "name": "com.fusion.frameworks",
-  "version": "0.0.3",
-  "displayName": "Frameworks",
+  "version": "0.0.4",
+  "displayName": "Fusion Frameworks",
   "description": "Frameworks",
   "unity": "2021.3",
   "dependencies": {
