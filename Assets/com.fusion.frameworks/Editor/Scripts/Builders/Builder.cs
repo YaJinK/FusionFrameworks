@@ -23,8 +23,18 @@ namespace Fusion.Frameworks.Editor
 
         public static BuildSetting BuildSetting { get => buildSetting; }
 
-        static Builder()
+        [MenuItem("Build/CreateGameAssetsFolder", false, 200)]
+        public static void CreateGameAssetsFolder()
         {
+            int divideIndex = filePathPrefix.IndexOf("/");
+            if (divideIndex != -1)
+            {
+                if (!AssetDatabase.IsValidFolder(filePathPrefix))
+                {
+                    AssetDatabase.CreateFolder("Assets", filePathPrefix.Substring(divideIndex + 1));
+                }
+            }
+
             buildSetting = AssetDatabase.LoadAssetAtPath<BuildSetting>(string.Format("{0}/{1}.asset", filePathPrefix, typeof(BuildSetting).Name));
             if (buildSetting == null)
             {
@@ -32,6 +42,8 @@ namespace Fusion.Frameworks.Editor
                 AssetDatabase.CreateAsset(buildSetting, $"{filePathPrefix}/BuildSetting.asset");
                 AssetDatabase.Refresh();
             }
+
+            AssetDatabase.Refresh();
         }
 
         [MenuItem("Build/Build", false, 2002)]
